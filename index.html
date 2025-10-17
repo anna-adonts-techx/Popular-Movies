@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Popular Movies Clone — TMDB</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900;1,200..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <div class="left-side">
+          <a href="#" class="logo-link">
+            <img src="media/logo.svg" alt="TMDB Logo" class="logo" />
+          </a>
+
+          <nav class="main-nav">
+            <ul>
+              <li><a href="#">Movies</a></li>
+              <li><a href="#">TV Shows</a></li>
+              <li><a href="#">People</a></li>
+              <li><a href="#">More</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="action-nav">
+          <a href="#" class="nav-icon plus-icon" title="Add New">
+            <i class="fas fa-plus"></i>
+          </a>
+          <a href="#" class="nav-link lang-selector">EN</a>
+          <a href="#" class="nav-icon bell-icon" title="Notifications">
+            <i class="fas fa-bell"></i>
+          </a>
+          <a href="#" class="user-avatar" title="Profile"> R </a>
+          <a href="#" class="nav-icon search-icon" title="Search TMDB">
+            <i class="fas fa-search"></i>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="content-wrapper">
+      <div class="container">
+        <aside class="sidebar">
+          <h2>Popular Movies</h2>
+
+          <button id="sticky-search" class="sticky-search-btn">Search</button>
+
+          <section class="panel open">
+            <h3>Sort <i class="fas fa-angle-down"></i></h3>
+            <div class="panel-content">
+              <div class="control-group">
+                <label for="sort-options">Sort Results By</label>
+                <select id="sort-options">
+                  <option value="popularity.desc">Popularity Descending</option>
+                  <option value="release_date.desc">
+                    Release Date Descending
+                  </option>
+                  <option value="vote_average.desc">Rating Descending</option>
+                  <option value="popularity.asc">Popularity Ascending</option>
+                  <option value="release_date.asc">
+                    Release Date Ascending
+                  </option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel open" id="filter-panel">
+            <h3>Filters <i class="fas fa-angle-down"></i></h3>
+            <div class="panel-content">
+              <div class="filter-group">
+                <h4>Show Me</h4>
+                <div class="control-group radio-group">
+                  <label>
+                    <input
+                      type="radio"
+                      name="show-me"
+                      value="everything"
+                      checked
+                    />
+                    Everything
+                  </label>
+                  <label>
+                    <input type="radio" name="show-me" value="not-seen" />
+                    Movies I Haven't Seen
+                  </label>
+                  <label>
+                    <input type="radio" name="show-me" value="seen" /> Movies I
+                    Have Seen
+                  </label>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <h4>Release Dates</h4>
+                <div class="control-group checkbox-group">
+                  <label>
+                    <input type="checkbox" checked /> Search all releases?
+                  </label>
+                </div>
+                <div class="control-group date-group">
+                  <label for="release-from">from</label>
+                  <input type="date" id="release-from" />
+                  <i class="fas fa-calendar-alt calendar-icon"></i>
+                </div>
+                <div class="control-group date-group">
+                  <label for="release-to">to</label>
+                  <input type="date" id="release-to" value="2026-04-16" />
+                  <i class="fas fa-calendar-alt calendar-icon"></i>
+                </div>
+              </div>
+
+              <div class="filter-group genre-filter-group">
+                <h4>Genres</h4>
+                <div id="genre-checkboxes" class="genre-list button-list">
+                  <p class="loading-genres">Loading genres...</p>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <h4>Certification</h4>
+              </div>
+
+              <div class="filter-group">
+                <h4>
+                  Language <i class="fas fa-question-circle help-icon"></i>
+                </h4>
+                <div class="control-group">
+                  <select id="language-select">
+                    <option value="">None Selected</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <h4>User Score</h4>
+                <div class="control-group">
+                  <div
+                    class="k-slider k-slider-horizontal full_width range"
+                    id="user-score-slider-container"
+                  >
+                    <div class="k-slider-track-wrap">
+                      <ul class="k-reset k-slider-items" role="presentation">
+                        <li class="k-tick k-tick-large k-first" title="0">
+                          <span class="k-label">0</span>
+                        </li>
+                        <li class="k-tick" title="1"></li>
+                        <li class="k-tick" title="2"></li>
+                        <li class="k-tick" title="3"></li>
+                        <li class="k-tick" title="4"></li>
+                        <li
+                          class="k-tick k-tick-large"
+                          title="5"
+                          style="line-height: 1px"
+                        >
+                          <span class="k-label">5</span>
+                        </li>
+                        <li class="k-tick" title="6"></li>
+                        <li class="k-tick" title="7"></li>
+                        <li class="k-tick" title="8"></li>
+                        <li class="k-tick" title="9"></li>
+                        <li class="k-tick k-tick-large k-last" title="10">
+                          <span class="k-label">10</span>
+                        </li>
+                      </ul>
+                      <div class="k-slider-track">
+                        <div
+                          class="k-slider-selection"
+                          id="user-score-selection"
+                          style="width: 100%; left: 0px"
+                        ></div>
+                        <span
+                          tabindex="0"
+                          class="k-draghandle k-draghandle-start"
+                          title="drag start"
+                          role="slider"
+                          aria-valuemin="0"
+                          aria-valuemax="10"
+                          aria-valuenow="0"
+                          style="left: 0%"
+                        ></span>
+                        <span
+                          tabindex="0"
+                          class="k-draghandle k-draghandle-end"
+                          title="drag end"
+                          role="slider"
+                          aria-valuemin="0"
+                          aria-valuemax="10"
+                          aria-valuenow="10"
+                          style="left: 100%"
+                        ></span>
+                      </div>
+                      <div
+                        id="user_score_range_inputs"
+                        class="full_width range"
+                        style="display: none"
+                      >
+                        <input
+                          id="vote_average_gte"
+                          name="vote_average.gte"
+                          value="0"
+                          type="text"
+                        />
+                        <input
+                          id="vote_average_lte"
+                          name="vote_average.lte"
+                          value="10"
+                          type="text"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <h4>Minimum User Votes</h4>
+                <div class="control-group">
+                  <div
+                    class="k-slider k-slider-horizontal full_width range"
+                    id="min-votes-slider-container"
+                  >
+                    <div class="k-slider-track-wrap">
+                      <ul class="k-reset k-slider-items" role="presentation">
+                        <li class="k-tick k-tick-large k-first" title="0">
+                          <span class="k-label">0</span>
+                        </li>
+                        <li
+                          class="k-tick k-tick-large"
+                          title="100"
+                          style="line-height: 1px"
+                        >
+                          <span class="k-label">100</span>
+                        </li>
+                        <li
+                          class="k-tick k-tick-large"
+                          title="200"
+                          style="line-height: 1px"
+                        >
+                          <span class="k-label">200</span>
+                        </li>
+                        <li
+                          class="k-tick k-tick-large"
+                          title="300"
+                          style="line-height: 1px"
+                        >
+                          <span class="k-label">300</span>
+                        </li>
+                        <li
+                          class="k-tick k-tick-large"
+                          title="400"
+                          style="line-height: 1px"
+                        >
+                          <span class="k-label">400</span>
+                        </li>
+                        <li class="k-tick k-tick-large k-last" title="500">
+                          <span class="k-label">500</span>
+                        </li>
+                      </ul>
+                      <div class="k-slider-track">
+                        <div
+                          class="k-slider-selection"
+                          id="min-votes-selection"
+                          style="width: 100%; left: 0px"
+                        ></div>
+                        <span
+                          tabindex="0"
+                          class="k-draghandle k-draghandle-start"
+                          title="drag start"
+                          role="slider"
+                          aria-valuemin="0"
+                          aria-valuemax="500"
+                          aria-valuenow="0"
+                          style="left: 0%"
+                        ></span>
+                        <span
+                          tabindex="0"
+                          class="k-draghandle k-draghandle-end"
+                          title="drag end"
+                          role="slider"
+                          aria-valuemin="0"
+                          aria-valuemax="500"
+                          aria-valuenow="500"
+                          style="left: 100%; display: none;"
+                        ></span>
+                      </div>
+                      <div
+                        id="min_votes_range_inputs"
+                        class="full_width range"
+                        style="display: none"
+                      >
+                        <input
+                          id="vote_count_gte"
+                          name="vote_count.gte"
+                          value="0"
+                          type="text"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <h4>Runtime</h4>
+                <div class="control-group">
+                  <div
+                    class="k-slider k-slider-horizontal full_width range"
+                    id="runtime-slider-container"
+                  >
+                    <div class="k-slider-track-wrap">
+                      <ul class="k-reset k-slider-items" role="presentation">
+                        <li class="k-tick k-tick-large k-first" title="0">
+                          <span class="k-label">0</span>
+                        </li>
+                        <li
+                          class="k-tick k-tick-large"
+                          title="120"
+                          style="line-height: 1px"
+                        >
+                          <span class="k-label">120</span>
+                        </li>
+                        <li
+                          class="k-tick k-tick-large"
+                          title="240"
+                          style="line-height: 1px"
+                        >
+                          <span class="k-label">240</span>
+                        </li>
+                        <li class="k-tick k-tick-large k-last" title="360">
+                          <span class="k-label">360</span>
+                        </li>
+                      </ul>
+                      <div class="k-slider-track">
+                        <div
+                          class="k-slider-selection"
+                          id="runtime-selection"
+                          style="width: 100%; left: 0px"
+                        ></div>
+                        <span
+                          tabindex="0"
+                          class="k-draghandle k-draghandle-start"
+                          title="drag start"
+                          role="slider"
+                          aria-valuemin="0"
+                          aria-valuemax="360"
+                          aria-valuenow="0"
+                          style="left: 0%; display: none;"
+                        ></span>
+                        <span
+                          tabindex="0"
+                          class="k-draghandle k-draghandle-end"
+                          title="drag end"
+                          role="slider"
+                          aria-valuemin="0"
+                          aria-valuemax="360"
+                          aria-valuenow="360"
+                          style="left: 100%"
+                        ></span>
+                      </div>
+                      <div
+                        id="runtime_range_inputs"
+                        class="full_width range"
+                        style="display: none"
+                      >
+                        <input
+                          id="with_runtime_lte"
+                          name="with_runtime.lte"
+                          value="360"
+                          type="text"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <h4>Keywords</h4>
+                <div class="control-group">
+                  <input
+                    type="text"
+                    id="keywords-input"
+                    placeholder="Filter by keywords..."
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <button id="search-button" class="apply-filter-btn" disabled>
+            Search
+          </button>
+        </aside>
+
+        <section class="movie-list-area">
+          <div id="movies-grid" class="movies-grid"></div>
+
+          <p
+            id="loading-indicator"
+            class="message-status"
+            style="display: none"
+          >
+            Loading more movies...
+          </p>
+          <p
+            id="error-message"
+            class="message-status error"
+            style="display: none"
+          >
+            Failed to load movies. Please try again.
+          </p>
+
+          <button
+            id="load-more-btn"
+            class="load-more-btn"
+            style="display: none"
+          >
+            Load More
+          </button>
+        </section>
+      </div>
+    </main>
+
+    <footer class="tmdb-footer">
+      <div class="footer-content-wrapper">
+        <div class="footer-col footer-logo-and-greeting">
+          <a href="/" class="footer-logo-link">
+            <div class="tmdb-logo-placeholder">
+              <img
+                src="media/moviedb.svg"
+                alt="TMDB Logo"
+                class="footer-logo"
+                />
+            </div>
+          </a>
+          <a href="#" class="btn-greeting">Hi annaadonts!</a>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-title">THE BASICS</h3>
+          <ul>
+            <li><a href="#">About TMDB</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">API Documentation</a></li>
+            <li><a href="#">API for Business</a></li>
+            <li><a href="#">System Status</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-title">GET INVOLVED</h3>
+          <ul>
+            <li><a href="#">Contribution Bible</a></li>
+            <li><a href="#">Add New Movie</a></li>
+            <li><a href="#">Add New TV Show</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-title">COMMUNITY</h3>
+          <ul>
+            <li><a href="#">Guidelines</a></li>
+            <li><a href="#">Discussions</a></li>
+            <li><a href="#">Leaderboard</a></li>
+            <li><a href="#">Support Forums</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-title">LEGAL</h3>
+          <ul>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">API Terms of Use</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">DMCA Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
