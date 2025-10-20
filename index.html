@@ -19,8 +19,35 @@
     />
   </head>
   <body>
+    
+    <div id="mobile-sidebar-menu" class="mobile-sidebar">
+        <nav class="mobile-nav">
+            <ul>
+                <li class="section-title"><a href="#">Movies</a></li>
+                <li class="section-title"><a href="#">TV Shows</a></li>
+                <li class="section-title"><a href="#">People</a></li>
+                
+                <li class="separator"></li>
+                
+                <li><a href="#">Contribution Bible</a></li>
+                <li><a href="#">Discussions</a></li>
+                <li><a href="#">Leaderboard</a></li>
+                <li><a href="#">API</a></li>
+                <li><a href="#">Support</a></li>
+                <li><a href="#">About</a></li>
+                
+                <li class="separator"></li>
+                
+                <li><a href="#">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
     <header>
       <div class="header-content">
+        <div class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+
         <div class="left-side">
           <a href="#" class="logo-link">
             <img src="media/logo.svg" alt="TMDB Logo" class="logo" />
@@ -66,14 +93,17 @@
                 <label for="sort-options">Sort Results By</label>
                 <select id="sort-options">
                   <option value="popularity.desc">Popularity Descending</option>
+                  <option value="popularity.asc">Popularity Ascending</option>
+                  <option value="vote_average.desc">Rating Descending</option>
+                  <option value="vote_average.asc">Rating Ascending</option>
                   <option value="release_date.desc">
                     Release Date Descending
                   </option>
-                  <option value="vote_average.desc">Rating Descending</option>
-                  <option value="popularity.asc">Popularity Ascending</option>
                   <option value="release_date.asc">
                     Release Date Ascending
                   </option>
+                  <option value="original_title.asc">Title (A-Z)</option>
+                  <option value="original_title.desc">Title (Z-A)</option>
                 </select>
               </div>
             </div>
@@ -109,21 +139,56 @@
                 <h4>Release Dates</h4>
                 <div class="control-group checkbox-group">
                   <label>
-                    <input type="checkbox" checked /> Search all releases?
+                    <input type="checkbox" id="search-all-releases" /> Search all releases?
                   </label>
                 </div>
-                <div class="control-group date-group">
+
+                <div class="control-group checkbox-group countries-toggle" id="countries-toggle-container">
+                    <label>
+                        <input type="checkbox" id="search-all-countries" /> Search all countries?
+                    </label>
+                </div>
+
+                <div class="control-group country-select-container" id="country-select-container">
+                    <div class="custom-dropdown-mimic">
+                        <select id="country-select">
+                            <option value="">Loading countries...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="control-group checkbox-group release-type-filters" id="release-type-filters">
+                  <label>
+                    <input type="checkbox" name="release-type" value="1" checked /> Theatrical (limited)
+                  </label>
+                  <label>
+                    <input type="checkbox" name="release-type" value="2" checked /> Theatrical
+                  </label>
+                  <label>
+                    <input type="checkbox" name="release-type" value="3" checked /> Premiere
+                  </label>
+                  <label>
+                    <input type="checkbox" name="release-type" value="4" checked /> Digital
+                  </label>
+                  <label>
+                    <input type="checkbox" name="release-type" value="5" checked /> Physical
+                  </label>
+                  <label>
+                    <input type="checkbox" name="release-type" value="6" checked /> TV
+                  </label>
+                </div>
+
+                <div class="control-group date-group" id="from-date-group">
                   <label for="release-from">from</label>
-                  <input type="date" id="release-from" />
+                  <input type="date" id="release-from" /> 
                   <i class="fas fa-calendar-alt calendar-icon"></i>
                 </div>
-                <div class="control-group date-group">
+                <div class="control-group date-group" id="to-date-group">
                   <label for="release-to">to</label>
-                  <input type="date" id="release-to" value="2026-04-16" />
+                  <input type="date" id="release-to" value="2026-04-20" /> 
                   <i class="fas fa-calendar-alt calendar-icon"></i>
                 </div>
               </div>
-
               <div class="filter-group genre-filter-group">
                 <h4>Genres</h4>
                 <div id="genre-checkboxes" class="genre-list button-list">
@@ -137,7 +202,10 @@
 
               <div class="filter-group">
                 <h4>
-                  Language <i class="fas fa-question-circle help-icon"></i>
+                  Language <i class="fas fa-question-circle help-icon" id="language-help-icon"></i>
+                  <div class="tooltip-box" id="language-tooltip">
+                    Filter items based on their original language.
+                  </div>
                 </h4>
                 <div class="control-group">
                   <select id="language-select">
@@ -145,7 +213,6 @@
                   </select>
                 </div>
               </div>
-
               <div class="filter-group">
                 <h4>User Score</h4>
                 <div class="control-group">
@@ -165,7 +232,6 @@
                         <li
                           class="k-tick k-tick-large"
                           title="5"
-                          style="line-height: 1px"
                         >
                           <span class="k-label">5</span>
                         </li>
@@ -181,7 +247,6 @@
                         <div
                           class="k-slider-selection"
                           id="user-score-selection"
-                          style="width: 100%; left: 0px"
                         ></div>
                         <span
                           tabindex="0"
@@ -191,7 +256,6 @@
                           aria-valuemin="0"
                           aria-valuemax="10"
                           aria-valuenow="0"
-                          style="left: 0%"
                         ></span>
                         <span
                           tabindex="0"
@@ -201,13 +265,11 @@
                           aria-valuemin="0"
                           aria-valuemax="10"
                           aria-valuenow="10"
-                          style="left: 100%"
                         ></span>
                       </div>
                       <div
                         id="user_score_range_inputs"
                         class="full_width range"
-                        style="display: none"
                       >
                         <input
                           id="vote_average_gte"
@@ -242,28 +304,24 @@
                         <li
                           class="k-tick k-tick-large"
                           title="100"
-                          style="line-height: 1px"
                         >
                           <span class="k-label">100</span>
                         </li>
                         <li
                           class="k-tick k-tick-large"
                           title="200"
-                          style="line-height: 1px"
                         >
                           <span class="k-label">200</span>
                         </li>
                         <li
                           class="k-tick k-tick-large"
                           title="300"
-                          style="line-height: 1px"
                         >
                           <span class="k-label">300</span>
                         </li>
                         <li
                           class="k-tick k-tick-large"
                           title="400"
-                          style="line-height: 1px"
                         >
                           <span class="k-label">400</span>
                         </li>
@@ -275,7 +333,6 @@
                         <div
                           class="k-slider-selection"
                           id="min-votes-selection"
-                          style="width: 100%; left: 0px"
                         ></div>
                         <span
                           tabindex="0"
@@ -285,7 +342,6 @@
                           aria-valuemin="0"
                           aria-valuemax="500"
                           aria-valuenow="0"
-                          style="left: 0%"
                         ></span>
                         <span
                           tabindex="0"
@@ -295,13 +351,11 @@
                           aria-valuemin="0"
                           aria-valuemax="500"
                           aria-valuenow="500"
-                          style="left: 100%; display: none;"
                         ></span>
                       </div>
                       <div
                         id="min_votes_range_inputs"
                         class="full_width range"
-                        style="display: none"
                       >
                         <input
                           id="vote_count_gte"
@@ -330,14 +384,12 @@
                         <li
                           class="k-tick k-tick-large"
                           title="120"
-                          style="line-height: 1px"
                         >
                           <span class="k-label">120</span>
                         </li>
                         <li
                           class="k-tick k-tick-large"
                           title="240"
-                          style="line-height: 1px"
                         >
                           <span class="k-label">240</span>
                         </li>
@@ -349,7 +401,6 @@
                         <div
                           class="k-slider-selection"
                           id="runtime-selection"
-                          style="width: 100%; left: 0px"
                         ></div>
                         <span
                           tabindex="0"
@@ -359,7 +410,6 @@
                           aria-valuemin="0"
                           aria-valuemax="360"
                           aria-valuenow="0"
-                          style="left: 0%; display: none;"
                         ></span>
                         <span
                           tabindex="0"
@@ -369,13 +419,11 @@
                           aria-valuemin="0"
                           aria-valuemax="360"
                           aria-valuenow="360"
-                          style="left: 100%"
                         ></span>
                       </div>
                       <div
                         id="runtime_range_inputs"
                         class="full_width range"
-                        style="display: none"
                       >
                         <input
                           id="with_runtime_lte"
@@ -413,14 +461,12 @@
           <p
             id="loading-indicator"
             class="message-status"
-            style="display: none"
           >
             Loading more movies...
           </p>
           <p
             id="error-message"
             class="message-status error"
-            style="display: none"
           >
             Failed to load movies. Please try again.
           </p>
@@ -428,7 +474,6 @@
           <button
             id="load-more-btn"
             class="load-more-btn"
-            style="display: none"
           >
             Load More
           </button>
@@ -436,6 +481,29 @@
       </div>
     </main>
 
+    <template id="movie-card-template">
+        <div class="movie-card">
+            <a href="#">
+                <img src="" alt="Movie Poster" class="poster" data-poster>
+            </a>
+            
+            <div class="consensus tight">
+                <div class="outer_ring">
+                    <div class="user_score_chart" data-score-chart>
+                        <div class="percent">
+                            <span data-score-value></span> 
+                        </div>
+                        <canvas height="34" width="34"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3><a href="#" data-title></a></h3>
+                <p class="release-date" data-release-date></p>
+                <p class="description" data-overview></p>
+            </div>
+        </div>
+    </template>
     <footer class="tmdb-footer">
       <div class="footer-content-wrapper">
         <div class="footer-col footer-logo-and-greeting">
