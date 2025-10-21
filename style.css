@@ -753,6 +753,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: block;
     aspect-ratio: 2/3; 
 }
+
+.movie-card a {
+    position: relative;
+}
+
 .movie-info {
     padding: 20px 10px 10px 10px;
 }

@@ -11,12 +11,12 @@ let currentPage = 1;
 let lastAppliedSortBy = 'popularity.desc'; // Default sort
 let lastAppliedGenres = [];
 let lastAppliedUserScore = 0;
-let lastAppliedUserScoreMax = 10; 
-let lastAppliedMinVotes = 0;  
-let lastAppliedRuntime = 360;   
-let lastAppliedKeywords = ''; 
-let lastAppliedLanguage = ''; 
-let lastScrollY = 0; 
+let lastAppliedUserScoreMax = 10;
+let lastAppliedMinVotes = 0;
+let lastAppliedRuntime = 360;
+let lastAppliedKeywords = '';
+let lastAppliedLanguage = '';
+let lastScrollY = 0;
 
 // --- DOM Elements ---
 const moviesGrid = document.getElementById('movies-grid');
@@ -27,7 +27,10 @@ const stickySearchBtn = document.getElementById('sticky-search');
 const loadingIndicator = document.getElementById('loading-indicator');
 const errorMessage = document.getElementById('error-message');
 const genreCheckboxesContainer = document.getElementById('genre-checkboxes');
-const filterPanel = document.getElementById('filter-panel'); 
+const filterPanel = document.getElementById('filter-panel');
+// Template for movie cards
+const movieCardTemplate = document.getElementById('movie-card-template');
+
 
 // Filter specific elements
 const languageSelect = document.getElementById('language-select');
@@ -36,7 +39,7 @@ const keywordsInput = document.getElementById('keywords-input');
 // Release Dates elements
 const searchAllReleasesCheckbox = document.getElementById('search-all-releases');
 const searchAllCountriesCheckbox = document.getElementById('search-all-countries');
-const countriesToggleContainer = document.getElementById('countries-toggle-container'); 
+const countriesToggleContainer = document.getElementById('countries-toggle-container');
 const countrySelectContainer = document.getElementById('country-select-container');
 const countrySelect = document.getElementById('country-select');
 const releaseTypeFilters = document.getElementById('release-type-filters');
@@ -65,12 +68,12 @@ const mobileSidebar = document.getElementById('mobile-sidebar-menu');
 
 /**
  * Converts a 2-letter ISO 3166-1 alpha-2 country code to a Unicode flag emoji.
- * @param {string} code 
+ * @param {string} code
  * @returns {string} The flag emoji string.
  */
 function countryCodeToEmoji(code) {
     if (!code) return '';
-    const OFFSET = 127397; 
+    const OFFSET = 127397;
     const chars = Array.from(code.toUpperCase()).map(char =>
         String.fromCodePoint(char.codePointAt(0) + OFFSET)
     );
@@ -89,6 +92,7 @@ function formatDisplayDate(dateString) {
     if (!dateString || !dateString.includes('-')) return dateString;
     const parts = dateString.split('-');
     if (parts.length === 3) {
+        // Use parseInt to remove leading zeros for M/D/YYYY format
         return `${parseInt(parts[1])}/${parseInt(parts[2])}/${parts[0]}`;
     }
     return dateString;
@@ -97,10 +101,10 @@ function formatDisplayDate(dateString) {
 
 // --- Initial Setup and Event Listeners ---
 function init() {
-    // 1. Fetch initial data for filters 
-    fetchGenres(); 
+    // 1. Fetch initial data for filters
+    fetchGenres();
     fetchLanguages();
-    fetchCountriesAndRenderSelect(); 
+    fetchCountriesAndRenderSelect();
 
     // 2. Setup date inputs for custom display format
     setupCustomDateInput(releaseToInput);
@@ -109,24 +113,24 @@ function init() {
 
     // 3. Set up remaining event listeners
     loadMoreBtn.addEventListener('click', handleLoadMore);
-    
+
     // Listeners for filter changes (enables/disables Search button)
-    sortOptions.addEventListener('change', handleControlChange); 
+    sortOptions.addEventListener('change', handleControlChange);
     languageSelect.addEventListener('change', handleControlChange);
 
     // Release Dates Listeners
     searchAllReleasesCheckbox.addEventListener('change', handleReleaseToggleChange);
     searchAllCountriesCheckbox.addEventListener('change', handleCountryToggleChange);
-    
+
     // Add listeners to enable search button on filter change
     releaseTypeFilters.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', handleControlChange);
     });
     countrySelect.addEventListener('change', handleControlChange);
-    
+
     // Range sliders
     setupRangeSlider(userScoreContainer, 0, 10, 0.1, lastAppliedUserScore, lastAppliedUserScoreMax, handleControlChange);
-    setupRangeSlider(minVotesContainer, 0, 500, 1, lastAppliedMinVotes, 500, handleControlChange, true); 
+    setupRangeSlider(minVotesContainer, 0, 500, 1, lastAppliedMinVotes, 500, handleControlChange, true);
     setupRangeSlider(runtimeContainer, 0, 360, 1, 0, lastAppliedRuntime, handleControlChange, false, true);
 
     keywordsInput.addEventListener('input', handleControlChange);
@@ -136,17 +140,17 @@ function init() {
 
     // UI/Visibility
     window.addEventListener('scroll', handleHeaderScroll);
-    window.addEventListener('scroll', handleScrollVisibility); 
-    window.addEventListener('resize', handleScrollVisibility); 
-    
+    window.addEventListener('scroll', handleScrollVisibility);
+    window.addEventListener('resize', handleScrollVisibility);
+
     document.querySelectorAll('.panel h3').forEach(header => {
         header.addEventListener('click', togglePanel);
     });
-    
+
     // --- MOBILE MENU EVENT ---
     menuToggle.addEventListener('click', toggleMobileMenu);
 
-    searchButton.disabled = true; 
+    searchButton.disabled = true;
     handleScrollVisibility();
     handleReleaseToggleChange();
 }
@@ -162,14 +166,14 @@ function toggleMobileMenu() {
 
 /**
  * Handles the logic for custom date input formatting and picker functionality.
- * @param {HTMLInputElement} inputElement 
+ * @param {HTMLInputElement} inputElement
  */
 function setupCustomDateInput(inputElement) {
     // 1. Set initial value to display format
     const initialInternalValue = inputElement.value;
     inputElement.setAttribute('data-internal-value', initialInternalValue);
     inputElement.value = formatDisplayDate(initialInternalValue);
-    inputElement.type = 'text'; 
+    inputElement.type = 'text';
 
     // 2. On Focus/Click: switch to 'date' type and internal format for picker to work
     inputElement.addEventListener('focus', function() {
@@ -182,7 +186,7 @@ function setupCustomDateInput(inputElement) {
         if (this.value) {
             this.setAttribute('data-internal-value', this.value);
             this.value = formatDisplayDate(this.value);
-            this.type = 'text'; 
+            this.type = 'text';
         }
         handleControlChange();
     });
@@ -193,7 +197,7 @@ function setupCustomDateInput(inputElement) {
         if (this.type === 'date' && this.value) {
             this.setAttribute('data-internal-value', this.value);
         }
-        
+
         // Revert display to custom format (M/D/YYYY) using the internal value
         if (this.getAttribute('data-internal-value')) {
             this.value = formatDisplayDate(this.getAttribute('data-internal-value'));
@@ -208,31 +212,45 @@ function setupCustomDateInput(inputElement) {
 
 async function fetchCountriesAndRenderSelect() {
     const url = `${BASE_URL}/configuration/countries?api_key=${API_KEY}`;
-    
+
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch countries');
-        
+
         const countries = await response.json();
         renderCountryFilters(countries);
-        
+
     } catch (error) {
         console.error("Country API Error:", error);
     }
 }
 
+/**
+ * Renders country options to the country select dropdown.
+ * Uses document.createElement and appendChild to avoid innerHTML.
+ * @param {Array<Object>} countries
+ */
 function renderCountryFilters(countries) {
-    countrySelect.innerHTML = ''; 
-    
+    // Clear the existing options without using innerHTML
+    while (countrySelect.firstChild) {
+        countrySelect.removeChild(countrySelect.firstChild);
+    }
+
     countries.sort((a, b) => a.english_name.localeCompare(b.english_name));
+
+    // Add a placeholder option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Select a country';
+    countrySelect.appendChild(defaultOption);
 
     countries.forEach(country => {
         const option = document.createElement('option');
         const emoji = countryCodeToEmoji(country.iso_3166_1);
-        
+
         option.value = country.iso_3166_1;
         option.textContent = `${emoji} ${country.english_name}`;
-        
+
         if (country.iso_3166_1 === 'AM') {
             option.selected = true;
         }
@@ -243,16 +261,16 @@ function renderCountryFilters(countries) {
 
 async function fetchGenres() {
     const url = `${BASE_URL}/genre/movie/list?api_key=${API_KEY}`;
-    
+
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch genres');
-        
+
         const data = await response.json();
         renderGenreFilters(data.genres);
-        
-        fetchMovies(true); 
-        
+
+        fetchMovies(true);
+
     } catch (error) {
         console.error("Genre API Error:", error);
         showStatus('error', 'Failed to load filters. Check your network.');
@@ -271,9 +289,24 @@ async function fetchLanguages() {
     }
 }
 
+/**
+ * Renders language options to the language select dropdown.
+ * Uses document.createElement and appendChild to avoid innerHTML.
+ * @param {Array<Object>} languages
+ */
 function renderLanguageFilters(languages) {
-    languageSelect.innerHTML = '<option value="">None Selected</option>'; 
-    
+    // Clear the existing options without using innerHTML
+    while (languageSelect.firstChild) {
+        languageSelect.removeChild(languageSelect.firstChild);
+    }
+
+    // Add default option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'None Selected';
+    languageSelect.appendChild(defaultOption);
+
+
     languages.sort((a, b) => a.english_name.localeCompare(b.english_name));
 
     languages.forEach(lang => {
@@ -288,39 +321,39 @@ async function fetchMovies(isNewQuery) {
     loadingIndicator.style.display = 'block';
     errorMessage.style.display = 'none';
     loadMoreBtn.style.display = 'none';
-    
+
     const filters = getCurrentFilterState();
 
     let params = new URLSearchParams({
         api_key: API_KEY,
-        sort_by: filters.sortBy, 
+        sort_by: filters.sortBy,
         page: currentPage,
-        language: 'en-US' 
+        language: 'en-US'
     });
-    
+
     if (lastAppliedGenres.length > 0) {
         params.append('with_genres', lastAppliedGenres.join(','));
     }
 
     if (lastAppliedLanguage) {
-        params.append('with_original_language', lastAppliedLanguage); 
+        params.append('with_original_language', lastAppliedLanguage);
     }
 
     if (lastAppliedUserScore > 0) {
         params.append('vote_average.gte', lastAppliedUserScore);
     }
-    if (lastAppliedUserScoreMax < 10) { 
+    if (lastAppliedUserScoreMax < 10) {
         params.append('vote_average.lte', lastAppliedUserScoreMax);
     }
-    
+
     if (lastAppliedMinVotes > 0) {
         params.append('vote_count.gte', lastAppliedMinVotes);
     }
-    
-    if (lastAppliedRuntime < 360) { 
+
+    if (lastAppliedRuntime < 360) {
         params.append('with_runtime.lte', lastAppliedRuntime);
     }
-    
+
     if (!filters.searchAllReleases) {
         if (filters.selectedCountry) {
             params.append('region', filters.selectedCountry);
@@ -329,7 +362,7 @@ async function fetchMovies(isNewQuery) {
             params.append('with_release_type', filters.selectedReleaseTypes);
         }
     }
-    
+
     if (filters.releaseFrom) {
         params.append('primary_release_date.gte', filters.releaseFrom);
     }
@@ -343,11 +376,11 @@ async function fetchMovies(isNewQuery) {
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        
+
         const data = await response.json();
-        
+
         renderMovies(data.results, isNewQuery);
-        
+
         if (data.total_pages > currentPage) {
             loadMoreBtn.style.display = 'block';
         } else {
@@ -362,36 +395,50 @@ async function fetchMovies(isNewQuery) {
     }
 }
 
+/**
+ * Renders genre filters using document.createElement and appendChild.
+ * @param {Array<Object>} genres
+ */
 function renderGenreFilters(genres) {
-    genreCheckboxesContainer.innerHTML = ''; 
-    
+    // Clear the existing content without using innerHTML
+    while (genreCheckboxesContainer.firstChild) {
+        genreCheckboxesContainer.removeChild(genreCheckboxesContainer.firstChild);
+    }
+
     genres.forEach(genre => {
         const label = document.createElement('label');
-        
+
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.name = 'genre';
         checkbox.value = genre.name;
-        checkbox.dataset.id = genre.id; 
-        
+        checkbox.dataset.id = genre.id;
+
         label.appendChild(checkbox);
-        label.append(genre.name);
-        
+        label.append(genre.name); // Use append for text nodes
+
         genreCheckboxesContainer.appendChild(label);
     });
-    
+
     // Attach event listener to the newly rendered checkboxes
     genreCheckboxesContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', handleControlChange);
     });
 }
 
+/**
+ * Draws the progress circle for the user score on a canvas.
+ * @param {HTMLCanvasElement} canvas
+ * @param {number} percent
+ * @param {string} trackColor
+ * @param {string} barColor
+ */
 function drawScoreCircle(canvas, percent, trackColor, barColor) {
     const ctx = canvas.getContext('2d');
     const size = canvas.width;
     const radius = size / 2;
     const lineWidth = 3;
-    const startAngle = -Math.PI / 2; 
+    const startAngle = -Math.PI / 2;
 
     ctx.clearRect(0, 0, size, size);
 
@@ -406,8 +453,9 @@ function drawScoreCircle(canvas, percent, trackColor, barColor) {
     if (percent > 0) {
         const endAngle = startAngle + (2 * Math.PI * percent / 100);
         ctx.beginPath();
+        // A small adjustment for 100% to ensure the circle doesn't disappear in some browsers due to start/end being the same
         const adjustedEndAngle = percent === 100 ? startAngle + 2 * Math.PI - 0.001 : endAngle;
-        
+
         ctx.arc(radius, radius, radius - lineWidth, startAngle, adjustedEndAngle);
         ctx.strokeStyle = barColor;
         ctx.lineWidth = lineWidth;
@@ -416,81 +464,106 @@ function drawScoreCircle(canvas, percent, trackColor, barColor) {
 }
 
 
+/**
+ * Renders movie cards using the <template> element.
+ * @param {Array<Object>} movies
+ * @param {boolean} clearGrid
+ */
 function renderMovies(movies, clearGrid) {
     if (clearGrid) {
-        moviesGrid.innerHTML = '';
+        // Clear the existing content without using innerHTML
+        while (moviesGrid.firstChild) {
+            moviesGrid.removeChild(moviesGrid.firstChild);
+        }
     }
 
     if (movies.length === 0 && clearGrid) {
-        moviesGrid.innerHTML = '<p class="message-status">No movies found matching your criteria.</p>';
+        const noMoviesMessage = document.createElement('p');
+        noMoviesMessage.classList.add('message-status');
+        noMoviesMessage.textContent = 'No movies found matching your criteria.';
+        moviesGrid.appendChild(noMoviesMessage);
         return;
     }
 
     movies.forEach(movie => {
-        const card = document.createElement('div');
-        card.classList.add('movie-card');
-        
+        // Use the content of the template
+        const cardClone = movieCardTemplate.content.cloneNode(true);
+        const card = cardClone.querySelector('.movie-card');
+
         const posterPath = movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'media/placeholder.png';
         const userRating = (movie.vote_average * 10).toFixed(0);
-        
-        let barColor = '#d2d531'; 
-        let trackColor = '#423d0f'; 
-        
+
+        let barColor = '#d2d531';
+        let trackColor = '#423d0f';
+
         if (userRating >= 70) {
-            barColor = '#1ed5a9'; 
-            trackColor = '#204529'; 
+            barColor = '#1ed5a9';
+            trackColor = '#204529';
         } else if (userRating < 40 && userRating > 0) {
-            barColor = '#db2360'; 
-            trackColor = '#571435'; 
+            barColor = '#db2360';
+            trackColor = '#571435';
         } else if (userRating === '0') {
-            barColor = '#ccc'; 
-            trackColor = '#666'; 
+            barColor = '#ccc';
+            trackColor = '#666';
         }
 
-        const ratingBlockHTML = `
-            <div class="consensus tight">
-                <div class="outer_ring">
-                    <div class="user_score_chart" 
-                         data-percent="${userRating}" 
-                         data-track-color="${trackColor}" 
-                         data-bar-color="${barColor}">
-                        <div class="percent">
-                            <span>${userRating === '0' ? 'NR' : userRating}<small>${userRating === '0' ? '' : '%'}</small></span>
-                        </div>
-                        <canvas height="34" width="34"></canvas>
-                    </div>
-                </div>
-            </div>
-        `;
+        // --- Update elements in the cloned card ---
 
-        // Updated HTML block to include the movie overview/description
-        card.innerHTML = `
-            <a href="#" style="position: relative">
-                <img src="${posterPath}" alt="${movie.title} Poster" class="poster">
-                 ${ratingBlockHTML} 
-            </a>
-            <div class="movie-info">
-                <h3><a href="#">${movie.title}</a></h3>
-                <p class="release-date">${movie.release_date || 'N/A'}</p>
-                <p class="description">${movie.overview || ''}</p>
-            </div>
-        `;
-        
-        moviesGrid.appendChild(card);
+        const posterImg = card.querySelector('[data-poster]');
+        if (posterImg) {
+            posterImg.src = posterPath;
+            posterImg.alt = `${movie.title} Poster`;
+        }
 
-        const scoreChart = card.querySelector('.user_score_chart');
+        const titleLink = card.querySelector('[data-title]');
+        if (titleLink) {
+            titleLink.textContent = movie.title;
+        }
+
+        const releaseDateP = card.querySelector('[data-release-date]');
+        if (releaseDateP) {
+            releaseDateP.textContent = movie.release_date || 'N/A';
+        }
+
+        const overviewP = card.querySelector('[data-overview]');
+        if (overviewP) {
+            overviewP.textContent = movie.overview || '';
+        }
+
+        const scoreChart = card.querySelector('[data-score-chart]');
+        const scoreValueSpan = card.querySelector('[data-score-value]');
+
+        if (scoreChart && scoreValueSpan) {
+            scoreChart.dataset.percent = userRating;
+            scoreChart.dataset.trackColor = trackColor;
+            scoreChart.dataset.barColor = barColor;
+            // Use textContent for the number part and createElement for the small tag
+            scoreValueSpan.textContent = userRating === '0' ? 'NR' : userRating;
+            
+            if (userRating !== '0') {
+                 const smallPercent = document.createElement('small');
+                 smallPercent.textContent = '%';
+                 scoreValueSpan.appendChild(smallPercent);
+            }
+        }
         
+        // Append the whole document fragment (cardClone) to the grid
+        moviesGrid.appendChild(cardClone);
+
+        // Find the elements in the now-attached card (the last child of moviesGrid)
+        const attachedCard = moviesGrid.lastElementChild;
+        const attachedScoreChart = attachedCard.querySelector('[data-score-chart]');
+
         // Only draw the circle if the element exists (it's hidden in the mobile list view by CSS)
-        if(scoreChart) {
-            const canvas = scoreChart.querySelector('canvas');
+        if(attachedScoreChart) {
+            const canvas = attachedScoreChart.querySelector('canvas');
             drawScoreCircle(
-                canvas, 
-                parseInt(scoreChart.dataset.percent), 
-                scoreChart.dataset.trackColor, 
-                scoreChart.dataset.barColor
+                canvas,
+                parseInt(attachedScoreChart.dataset.percent),
+                attachedScoreChart.dataset.trackColor,
+                attachedScoreChart.dataset.barColor
             );
         }
-
     });
 }
 
@@ -507,10 +580,10 @@ function showStatus(type, message) {
 
 function handleReleaseToggleChange() {
     const isChecked = searchAllReleasesCheckbox.checked;
-    
+
     countriesToggleContainer.style.display = isChecked ? 'none' : 'block';
     releaseTypeFilters.style.display = isChecked ? 'none' : 'block';
-    
+
     if (isChecked) {
         searchAllCountriesCheckbox.checked = true;
         countrySelectContainer.style.display = 'none';
@@ -535,54 +608,54 @@ function getCurrentFilterState() {
     const userScoreEnd = parseFloat(userScoreHandleEnd.getAttribute('aria-valuenow'));
     const minVotesStart = parseInt(minVotesHandleStart.getAttribute('aria-valuenow'));
     const runtimeEnd = parseInt(runtimeHandleEnd.getAttribute('aria-valuenow'));
-    
+
     const searchAllReleases = searchAllReleasesCheckbox.checked;
     const searchAllCountries = searchAllCountriesCheckbox.checked;
     const selectedCountry = searchAllCountries ? '' : countrySelect.value;
-    
+
     const selectedReleaseTypes = Array.from(releaseTypeFilters.querySelectorAll('input:checked'))
                                      .map(checkbox => checkbox.value)
                                      .join('|');
-    
+
     return {
         sortBy: sortOptions.value,
         genres: Array.from(genreCheckboxesContainer.querySelectorAll('input:checked')).map(checkbox => checkbox.dataset.id).join(','),
         language: languageSelect.value,
-        userScore: userScoreStart, 
-        userScoreMax: userScoreEnd, 
+        userScore: userScoreStart,
+        userScoreMax: userScoreEnd,
         minVotes: minVotesStart,
         runtime: runtimeEnd,
         keywords: keywordsInput.value.trim(),
-        
+
         searchAllReleases: searchAllReleases,
         selectedCountry: selectedCountry,
         selectedReleaseTypes: selectedReleaseTypes,
         // Use the YYYY-MM-DD value stored in the data attribute for API calls
-        releaseFrom: releaseFromInput.getAttribute('data-internal-value'), 
-        releaseTo: releaseToInput.getAttribute('data-internal-value'),     
+        releaseFrom: releaseFromInput.getAttribute('data-internal-value'),
+        releaseTo: releaseToInput.getAttribute('data-internal-value'),
     };
 }
 
 function handleControlChange() {
     const currentState = getCurrentFilterState();
-    
+
     const sortChanged = currentState.sortBy !== lastAppliedSortBy;
-    const genresChanged = currentState.genres !== lastAppliedGenres.join(','); 
+    const genresChanged = currentState.genres !== lastAppliedGenres.join(',');
     const languageChanged = currentState.language !== lastAppliedLanguage;
     const userScoreChanged = parseFloat(currentState.userScore) !== lastAppliedUserScore || parseFloat(currentState.userScoreMax) !== lastAppliedUserScoreMax;
     const minVotesChanged = parseInt(currentState.minVotes) !== lastAppliedMinVotes;
     const runtimeChanged = parseInt(currentState.runtime) !== lastAppliedRuntime;
     const keywordsChanged = currentState.keywords !== lastAppliedKeywords;
-    
+
     const releaseToggleChanged = currentState.searchAllReleases !== searchAllReleasesCheckbox.checked;
-    const countryToggleChanged = currentState.selectedCountry !== countrySelect.value;
+    const countryToggleChanged = currentState.selectedCountry !== (searchAllCountriesCheckbox.checked ? '' : countrySelect.value); // Compare against current DOM state, not lastApplied value for country
     const releaseTypesChanged = currentState.selectedReleaseTypes !== Array.from(releaseTypeFilters.querySelectorAll('input:checked')).map(c => c.value).join('|');
 
     const dateFromChanged = currentState.releaseFrom !== releaseFromInput.getAttribute('data-internal-value');
     const dateToChanged = currentState.releaseTo !== releaseToInput.getAttribute('data-internal-value');
 
 
-    if (sortChanged || genresChanged || languageChanged || 
+    if (sortChanged || genresChanged || languageChanged ||
         userScoreChanged || minVotesChanged || runtimeChanged || keywordsChanged ||
         releaseToggleChanged || countryToggleChanged || releaseTypesChanged ||
         dateFromChanged || dateToChanged) {
@@ -590,39 +663,39 @@ function handleControlChange() {
     } else {
         searchButton.disabled = true;
     }
-    
-    handleScrollVisibility(); 
+
+    handleScrollVisibility();
 }
 
 function handleFilterSearch() {
     const filters = getCurrentFilterState();
-    
-    lastAppliedGenres = filters.genres.split(',').filter(id => id); 
+
+    lastAppliedGenres = filters.genres.split(',').filter(id => id);
     lastAppliedSortBy = filters.sortBy;
     lastAppliedLanguage = filters.language;
     lastAppliedUserScore = parseFloat(filters.userScore);
-    lastAppliedUserScoreMax = parseFloat(filters.userScoreMax); 
+    lastAppliedUserScoreMax = parseFloat(filters.userScoreMax);
     lastAppliedMinVotes = parseInt(filters.minVotes);
     lastAppliedRuntime = parseInt(filters.runtime);
     lastAppliedKeywords = filters.keywords;
 
 
     currentPage = 1;
-    fetchMovies(true); 
+    fetchMovies(true);
 
     searchButton.disabled = true;
     stickySearchBtn.classList.remove('is-visible');
-    stickySearchBtn.style.display = 'none'; 
+    stickySearchBtn.style.display = 'none';
 }
 
 
 function handleScrollVisibility() {
     if (window.innerWidth < 577 || searchButton.disabled) {
         stickySearchBtn.classList.remove('is-visible');
-        stickySearchBtn.style.display = 'none'; 
+        stickySearchBtn.style.display = 'none';
         return;
     }
-    
+
     stickySearchBtn.style.display = 'block';
 
     const greenButtonRect = searchButton.getBoundingClientRect();
@@ -638,14 +711,14 @@ function handleScrollVisibility() {
 
 function handleLoadMore() {
     currentPage++;
-    fetchMovies(false); 
+    fetchMovies(false);
 }
 
 function handleHeaderScroll() {
     const currentScrollY = window.scrollY;
     const header = document.querySelector('header');
-    
-    if (currentScrollY > 64) { 
+
+    if (currentScrollY > 64) {
         if (currentScrollY < lastScrollY) {
             header.classList.remove('header-hidden');
         } else {
@@ -690,7 +763,7 @@ function setupRangeSlider(container, min, max, step, initialStart, initialEnd, o
 
         const startPercent = valueToPercent(startValue, info.min, info.max);
         const endPercent = valueToPercent(endValue, info.min, info.max);
-        
+
         if (endOnly) {
             selection.style.left = '0%';
             selection.style.width = endPercent + '%';
@@ -709,7 +782,7 @@ function setupRangeSlider(container, min, max, step, initialStart, initialEnd, o
         } else {
             handleStart.style.left = '0%';
         }
-        
+
         if (!startOnly) {
             handleEnd.style.left = endPercent + '%';
             handleEnd.setAttribute('aria-valuenow', endValue.toFixed(step === 1 ? 0 : 1));
@@ -717,7 +790,7 @@ function setupRangeSlider(container, min, max, step, initialStart, initialEnd, o
             handleEnd.style.left = '100%';
         }
     }
-    
+
     updateHandles(initialStart, initialEnd);
 
     const onStartDrag = (e) => {
@@ -732,10 +805,10 @@ function setupRangeSlider(container, min, max, step, initialStart, initialEnd, o
 
     const onDragging = (e) => {
         if (!isDragging) return;
-        
+
         const info = getRangeInfo();
         let clientX = e.clientX;
-        
+
         let newPosition = clientX - info.trackLeft;
         newPosition = Math.max(0, Math.min(info.trackWidth, newPosition));
 
@@ -763,7 +836,7 @@ function setupRangeSlider(container, min, max, step, initialStart, initialEnd, o
         document.removeEventListener('mouseup', onEndDrag);
     };
 
-    trackWrap.addEventListener('mousedown', onStartDrag); 
+    trackWrap.addEventListener('mousedown', onStartDrag);
 }
 
 function positionToValue(position, min, max, step, trackWidth) {
