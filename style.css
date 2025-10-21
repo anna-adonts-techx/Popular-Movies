@@ -535,9 +535,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: var(--text-light);
 }
 
+
 .genre-list label:has(input[type="checkbox"]:checked) {
-    background-color: var(--primary-dark); 
-    border-color: var(--primary-dark);
+    background-color: var(--accent-blue);
     color: var(--text-light);
 }
 .loading-genres {
