@@ -1246,3 +1246,107 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #language-help-icon:hover ~ .tooltip-box { 
     display: block;
 }
+
+/* --- NEW Keyword Input & Tag Styles --- */
+.keywords-control-group {
+    position: relative;
+}
+
+.keyword-tags-input {
+    /* Mimics a multi-select input field */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: var(--page-bg);
+}
+
+.keyword-tags-input input[type="text"] {
+    /* Style the actual text input inside the tag container */
+    flex-grow: 1;
+    min-width: 100px;
+    padding: 3px 0; /* Adjust padding since container has padding */
+    border: none;
+    box-shadow: none;
+    font-size: 0.9rem;
+    height: auto;
+}
+.keyword-tags-input input[type="text"]:focus {
+    outline: none;
+}
+
+/* Style for individual selected keyword tags */
+.keyword-tag {
+    display: flex;
+    align-items: center;
+    background-color: var(--panel-border);
+    /* border: 2px solid gray; */
+    color: var(--text-dark);
+    border-radius: 4px;
+    padding: 3px 5px 3px 10px;
+    font-size: 0.85rem;
+    /* font-weight: 600; */
+    white-space: nowrap;
+    user-select: none;
+}
+
+.keyword-tag .remove-tag {
+    background: none;
+    color: var(--footer-greeting-btn);
+    border: none;
+    /* color: var(--text-light); */
+    border-radius: 50%;
+    background-color: var(--text-dark);
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 0 3px;
+    transition: color 0.2s;
+}
+
+
+
+/* --- Autocomplete Dropdown Styles --- */
+.autocomplete-dropdown {
+    /* position: absolute; */
+    top: 100%; /* Position below the main input container */
+    left: 0;
+    right: 0;
+    z-index: 100;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    background-color: var(--page-bg);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
+}
+
+.autocomplete-dropdown.show {
+    display: block;
+}
+
+.autocomplete-dropdown li {
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    color: var(--text-dark);
+}
+
+.autocomplete-dropdown li:hover {
+    background-color: #f0f0f0;
+}
+.autocomplete-dropdown li.selected-keyword {
+    background-color: #e0e0e0;
+    color: var(--text-gray);
+    cursor: default;
+}

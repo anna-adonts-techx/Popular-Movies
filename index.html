@@ -71,7 +71,7 @@
           <a href="#" class="nav-icon bell-icon" title="Notifications">
             <i class="fas fa-bell"></i>
           </a>
-          <a href="#" class="user-avatar" title="Profile"> R </a>
+          <a href="#" class="user-avatar" title="Profile"> A </a>
           <a href="#" class="nav-icon search-icon" title="Search TMDB">
             <i class="fas fa-search"></i>
           </a>
@@ -439,12 +439,17 @@
 
               <div class="filter-group">
                 <h4>Keywords</h4>
-                <div class="control-group">
-                  <input
-                    type="text"
-                    id="keywords-input"
-                    placeholder="Filter by keywords..."
-                  />
+                <div class="control-group keywords-control-group">
+                  <div id="keywords-container" class="keyword-tags-input">
+                    <input
+                      type="text"
+                      id="keywords-input"
+                      placeholder="Filter by keywords..."
+                      autocomplete="off"
+                    />
+                    <ul id="keywords-autocomplete-list" class="autocomplete-dropdown">
+                      </ul>
+                  </div>
                 </div>
               </div>
             </div>

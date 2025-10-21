@@ -14,9 +14,13 @@ let lastAppliedUserScore = 0;
 let lastAppliedUserScoreMax = 10;
 let lastAppliedMinVotes = 0;
 let lastAppliedRuntime = 360;
-let lastAppliedKeywords = '';
+let lastAppliedKeywords = ''; // Stores the applied keyword IDs string
 let lastAppliedLanguage = '';
 let lastScrollY = 0;
+
+// NEW: Keyword State
+let selectedKeywords = []; // Array to hold { id, name } objects for selected keywords
+let currentKeywordTimeout = null; // For debounce
 
 // --- DOM Elements ---
 const moviesGrid = document.getElementById('movies-grid');
@@ -35,6 +39,11 @@ const movieCardTemplate = document.getElementById('movie-card-template');
 // Filter specific elements
 const languageSelect = document.getElementById('language-select');
 const keywordsInput = document.getElementById('keywords-input');
+
+// NEW Keyword DOM Elements
+const keywordsContainer = document.getElementById('keywords-container');
+const keywordsAutocompleteList = document.getElementById('keywords-autocomplete-list');
+
 
 // Release Dates elements
 const searchAllReleasesCheckbox = document.getElementById('search-all-releases');
@@ -133,7 +142,16 @@ function init() {
     setupRangeSlider(minVotesContainer, 0, 500, 1, lastAppliedMinVotes, 500, handleControlChange, true);
     setupRangeSlider(runtimeContainer, 0, 360, 1, 0, lastAppliedRuntime, handleControlChange, false, true);
 
-    keywordsInput.addEventListener('input', handleControlChange);
+    // NEW: Keyword Search with Debounce
+    keywordsInput.addEventListener('input', debounceKeywordsSearch); 
+    // NEW: Listen for clicks on the autocomplete list
+    keywordsAutocompleteList.addEventListener('click', handleKeywordSelect);
+    // NEW: Handle clearing the list and search on blur
+    keywordsInput.addEventListener('blur', () => {
+        // Wait a little before closing to allow time for a click on the list
+        setTimeout(() => keywordsAutocompleteList.classList.remove('show'), 200);
+    });
+
 
     searchButton.addEventListener('click', handleFilterSearch);
     stickySearchBtn.addEventListener('click', handleFilterSearch);
@@ -154,7 +172,6 @@ function init() {
     handleScrollVisibility();
     handleReleaseToggleChange();
 }
-
 
 /**
  * Toggles the visibility of the mobile sidebar menu.
@@ -353,6 +370,12 @@ async function fetchMovies(isNewQuery) {
     if (lastAppliedRuntime < 360) {
         params.append('with_runtime.lte', lastAppliedRuntime);
     }
+
+    // NEW: Apply selected keywords
+    if (lastAppliedKeywords) {
+        params.append('with_keywords', lastAppliedKeywords);
+    }
+
 
     if (!filters.searchAllReleases) {
         if (filters.selectedCountry) {
@@ -576,6 +599,156 @@ function showStatus(type, message) {
     }
 }
 
+// --- Keyword Search & Tag Functions ---
+
+/**
+ * Debounces the keyword search API call.
+ */
+function debounceKeywordsSearch() {
+    const query = keywordsInput.value.trim();
+    
+    // Check if the input is empty, hide the dropdown, and check control change
+    if (query.length === 0) {
+        keywordsAutocompleteList.classList.remove('show');
+        handleControlChange(); 
+        return;
+    }
+
+    if (currentKeywordTimeout) {
+        clearTimeout(currentKeywordTimeout);
+    }
+
+    currentKeywordTimeout = setTimeout(() => {
+        fetchKeywords(query);
+    }, 300); // 300ms debounce
+    
+    handleControlChange(); // Check if typing enables search
+}
+
+/**
+ * Fetches keyword suggestions from TMDB API.
+ * @param {string} query
+ */
+async function fetchKeywords(query) {
+    if (query.length < 2) {
+        keywordsAutocompleteList.classList.remove('show');
+        return;
+    }
+
+    const url = `${BASE_URL}/search/keyword?query=${encodeURIComponent(query)}&api_key=${API_KEY}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch keywords');
+        const data = await response.json();
+        renderKeywordAutocomplete(data.results, query);
+    } catch (error) {
+        console.error("Keyword API Error:", error);
+    }
+}
+
+/**
+ * Renders the keyword suggestions in the autocomplete dropdown.
+ * @param {Array<Object>} keywords
+ * @param {string} currentQuery
+ */
+function renderKeywordAutocomplete(keywords, currentQuery) {
+    // Clear the existing content
+    while (keywordsAutocompleteList.firstChild) {
+        keywordsAutocompleteList.removeChild(keywordsAutocompleteList.firstChild);
+    }
+    
+    // Filter out keywords that are already selected
+    const unselectedKeywords = keywords.filter(keyword => 
+        !selectedKeywords.some(selected => selected.id === keyword.id)
+    );
+
+    if (unselectedKeywords.length === 0) {
+        keywordsAutocompleteList.classList.remove('show');
+        return;
+    }
+
+    unselectedKeywords.forEach(keyword => {
+        const li = document.createElement('li');
+        li.textContent = keyword.name;
+        li.dataset.id = keyword.id;
+        li.dataset.name = keyword.name;
+
+        keywordsAutocompleteList.appendChild(li);
+    });
+
+    keywordsAutocompleteList.classList.add('show');
+}
+
+
+/**
+ * Handles the click event on an autocomplete item to select a keyword.
+ * @param {Event} event
+ */
+function handleKeywordSelect(event) {
+    const listItem = event.target.closest('li');
+    if (!listItem || listItem.classList.contains('selected-keyword')) return;
+
+    const id = parseInt(listItem.dataset.id);
+    const name = listItem.dataset.name;
+
+    if (id && name) {
+        selectedKeywords.push({ id, name });
+        renderSelectedKeywords();
+        keywordsInput.value = ''; // Clear the input after selection
+        keywordsAutocompleteList.classList.remove('show'); // Hide the dropdown
+        handleControlChange(); // Trigger check to enable search button
+        // Re-focus the input after selection to allow continuous typing
+        keywordsInput.focus();
+    }
+}
+
+/**
+ * Renders the selected keywords as tags/chips in the input container.
+ */
+function renderSelectedKeywords() {
+    // 1. Remove all existing tags from the container
+    const existingTags = keywordsContainer.querySelectorAll('.keyword-tag');
+    existingTags.forEach(tag => tag.remove());
+    
+    const inputElement = keywordsInput; 
+
+    // 2. Render and insert new tags before the input element
+    selectedKeywords.forEach(keyword => {
+        const tag = document.createElement('span');
+        tag.classList.add('keyword-tag');
+        tag.dataset.id = keyword.id;
+        tag.textContent = keyword.name;
+
+        const removeButton = document.createElement('button');
+        removeButton.classList.add('remove-tag');
+        removeButton.innerHTML = '&times;'; // 'x' symbol
+        removeButton.type = 'button'; // Prevent form submission
+        removeButton.title = `Remove ${keyword.name}`;
+        
+        removeButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleKeywordRemove(keyword.id);
+        });
+
+        tag.appendChild(removeButton);
+        
+        // Insert the tag before the input element
+        keywordsContainer.insertBefore(tag, inputElement);
+    });
+}
+
+/**
+ * Removes a keyword from the selected list and re-renders the tags.
+ * @param {number} id - The ID of the keyword to remove.
+ */
+function handleKeywordRemove(id) {
+    selectedKeywords = selectedKeywords.filter(keyword => keyword.id !== id);
+    renderSelectedKeywords();
+    handleControlChange(); // Trigger check to enable search button
+}
+
+
 // --- Dynamic UI/Slider Functions ---
 
 function handleReleaseToggleChange() {
@@ -625,7 +798,10 @@ function getCurrentFilterState() {
         userScoreMax: userScoreEnd,
         minVotes: minVotesStart,
         runtime: runtimeEnd,
+        // UPDATED: Keywords (typed text for comparison, selected IDs for API)
         keywords: keywordsInput.value.trim(),
+        selectedKeywordIds: selectedKeywords.map(k => k.id).join(','),
+
 
         searchAllReleases: searchAllReleases,
         selectedCountry: selectedCountry,
@@ -645,7 +821,10 @@ function handleControlChange() {
     const userScoreChanged = parseFloat(currentState.userScore) !== lastAppliedUserScore || parseFloat(currentState.userScoreMax) !== lastAppliedUserScoreMax;
     const minVotesChanged = parseInt(currentState.minVotes) !== lastAppliedMinVotes;
     const runtimeChanged = parseInt(currentState.runtime) !== lastAppliedRuntime;
-    const keywordsChanged = currentState.keywords !== lastAppliedKeywords;
+    
+    // UPDATED: Check for changes in selected keyword IDs
+    const keywordsChanged = currentState.selectedKeywordIds !== lastAppliedKeywords;
+
 
     const releaseToggleChanged = currentState.searchAllReleases !== searchAllReleasesCheckbox.checked;
     const countryToggleChanged = currentState.selectedCountry !== (searchAllCountriesCheckbox.checked ? '' : countrySelect.value); // Compare against current DOM state, not lastApplied value for country
@@ -677,7 +856,10 @@ function handleFilterSearch() {
     lastAppliedUserScoreMax = parseFloat(filters.userScoreMax);
     lastAppliedMinVotes = parseInt(filters.minVotes);
     lastAppliedRuntime = parseInt(filters.runtime);
-    lastAppliedKeywords = filters.keywords;
+    
+    // UPDATED: Save the list of selected keyword IDs
+    lastAppliedKeywords = filters.selectedKeywordIds;
+    keywordsInput.value = ''; // Clear the input field text after search
 
 
     currentPage = 1;
