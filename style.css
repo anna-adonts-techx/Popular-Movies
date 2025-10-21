@@ -1,0 +1,1352 @@
+/* TMDB Color Palette: Dark Blue (#032541), Light Blue (#01b4e4), Green (#1ed5a9) */
+:root {
+    --primary-dark: #032541; 
+    --page-bg: #fff; /* White background */
+    --accent-blue: #01b4e4;
+    --accent-green: #1ed5a9;
+    --text-dark: #000; /* Black/Dark text for white background */
+    --text-light: #fff; /* White text for dark header/cards */
+    --text-gray: #4c4c4c; 
+    --header-link-hover: #90cea5; 
+    --sidebar-bg: #fff;
+    --panel-border: #e3e3e3; 
+    --panel-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    /* NEW Footer Colors */
+    --footer-bg: #032541;
+    --footer-text-color: #fff;
+    --footer-link-hover: #d1d1d1;
+    --footer-greeting-btn: #fff;
+    
+    /* NEW Mobile Menu Colors */
+    --mobile-menu-bg: #032541;
+    --mobile-menu-link: #fff;
+    --mobile-menu-link-hover: #01b4e4;
+    --mobile-menu-separator: #20455d;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* Corrected font for TMDB style */
+    font-family: "Source Sans 3", Arial, sans-serif; 
+}
+
+body {
+    background-color: var(--page-bg); 
+    color: var(--text-dark); 
+    line-height: 1.6;
+    font-family: "Source Sans 3", Arial, sans-serif;
+    /* Prevents background scrolling when mobile menu is open */
+    overflow-x: hidden; 
+}
+body.menu-open {
+    /* Hides vertical scrollbar when menu is open on mobile */
+    overflow-y: hidden; 
+}
+
+
+/* --- MOBILE SIDEBAR MENU STYLES --- */
+.mobile-sidebar {
+    position: fixed;
+    top: 64px; /* Below the fixed header */
+    left: 0;
+    width: 80%; /* Takes up 80% of the screen width */
+    max-width: 300px;
+    height: calc(100% - 64px); /* Full height below the header */
+    background-color: var(--mobile-menu-bg);
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    
+    /* Start off-screen */
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    
+    /* Ensure scrollability for long menus */
+    overflow-y: auto; 
+    padding: 0;
+    
+    /* Hide by default on desktop/tablet */
+    display: none; 
+}
+
+.mobile-sidebar.open {
+    transform: translateX(0);
+}
+
+.mobile-nav ul {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.mobile-nav li {
+    padding: 0;
+}
+
+.mobile-nav a {
+    display: block;
+    padding: 10px 20px;
+    color: var(--mobile-menu-link);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 400;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.mobile-nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--mobile-menu-link-hover);
+}
+
+.mobile-nav .section-title a {
+    font-weight: 700; /* Bolder for section headers (Movies, TV Shows, People) */
+    font-size: 1.3rem;
+    padding: 12px 20px;
+}
+
+.mobile-nav .separator {
+    height: 1px;
+    background-color: var(--mobile-menu-separator);
+    margin: 10px 20px;
+    padding: 0;
+}
+
+
+/* --- Header (Fixed, Smart Hide/Show) --- */
+header {
+    background-color: var(--primary-dark);
+    padding: 0; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    min-height: 64px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    transition: top 0.3s ease-in-out; 
+}
+header.header-hidden {
+    top: -64px; 
+}
+
+.header-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px; 
+}
+.left-side {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+.logo-link {
+    display: block;
+    padding-right: 20px;
+    display: flex;
+    align-items: center;
+}
+.logo {
+    width: 154px; 
+    height: 20px; 
+}
+
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+.main-nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 10px 0; 
+    transition: color 0.2s;
+}
+.main-nav a:hover {
+    color: var(--header-link-hover); 
+}
+.action-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px; 
+    height: 100%;
+}
+.nav-icon {
+    color: var(--text-light);
+    font-size: 1.2rem;
+    transition: color 0.2s;
+}
+.nav-icon:hover {
+    color: var(--header-link-hover);
+}
+.lang-selector {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 3px 6px;
+    border: 1px solid var(--text-light);
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.lang-selector:hover {
+    background-color: var(--text-light);
+    color: var(--primary-dark);
+}
+.user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: var(--accent-blue);
+    color: var(--primary-dark);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+.search-icon {
+    color: var(--accent-blue); 
+    font-size: 1.5rem;
+}
+
+/* --- MOBILE TOGGLE MENU STYLES --- */
+.menu-toggle {
+    display: none; /* Hidden by default */
+    color: var(--text-light);
+    font-size: 1.5rem;
+    padding-right: 15px;
+    cursor: pointer;
+    height: 100%;
+    align-items: center;
+    order: -1; 
+}
+/* --- END MOBILE TOGGLE MENU STYLES --- */
+
+
+/* --- Main Layout --- */
+.content-wrapper {
+    padding-top: 84px; 
+}
+.container {
+    max-width: 1300px;
+    margin: 0 auto; 
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 30px;
+}
+
+/* --- Sidebar Styling (Collapsible Panels) --- */
+.sidebar {
+    position: relative;
+    color: var(--text-dark); 
+}
+
+.sidebar h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: var(--text-dark); 
+}
+
+/* Base Panel Container */
+.panel {
+    background-color: var(--sidebar-bg);
+    border: 1px solid var(--panel-border); 
+    border-radius: 8px; 
+    margin-bottom: 20px;
+    padding: 0; 
+    box-shadow: var(--panel-shadow);
+    overflow: hidden; 
+}
+
+/* Panel Header Style (The Clickable Area) */
+.panel h3 {
+    background-color: #f7f7f7; 
+    padding: 12px 20px; 
+    font-size: 1.1rem;
+    font-weight: 600; 
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--panel-border); 
+    color: var(--primary-dark);
+}
+
+.panel:not(.open) .panel-content {
+    display: none;
+}
+
+.panel h3:hover {
+    background-color: #ededed;
+}
+
+/* Collapse/Expand Icon Styling */
+.panel h3 i {
+    transition: transform 0.3s ease;
+    font-size: 0.9rem;
+    color: #999;
+}
+
+.panel.open h3 i {
+    transform: rotate(180deg);
+}
+
+/* Panel Content Body (Hidden by default) */
+.panel-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    padding: 0 20px; 
+}
+
+.panel.open .panel-content {
+    padding: 15px 20px 20px 20px; 
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05); 
+}
+
+/* --- Filter Groups and Controls (Unchanged) --- */
+.filter-group {
+    margin-bottom: 20px;
+    padding-bottom: 15px; 
+    border-bottom: 1px solid #eee;
+}
+
+.filter-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0; 
+}
+
+.filter-group h4 {
+    font-size: 1rem;
+    font-weight: 600; 
+    margin-bottom: 10px;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    position: relative; 
+}
+
+.footer-logo{
+    display: none;
+}
+.help-icon {
+    font-size: 0.8rem;
+    margin-left: 5px;
+    color: #999;
+}
+
+.control-group {
+    padding-top: 5px; 
+}
+.control-group label {
+    display: block;
+    font-weight: 400; 
+    margin-bottom: 5px;
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+.control-group select,
+.control-group input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+}
+.control-group.radio-group label,
+.control-group.checkbox-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-dark);
+}
+.control-group.radio-group input[type="radio"],
+.control-group.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+    width: auto;
+}
+
+
+/* --- CUSTOM DATE INPUT STYLES --- */
+.control-group.date-group {
+    position: relative;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    /* ADDITIONS for custom look: */
+    overflow: hidden; 
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 0; 
+}
+
+.control-group.date-group label {
+    flex-basis: 30px;
+    margin-bottom: 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: right;
+    color: var(--text-gray);
+    padding: 8px 0; 
+}
+
+.control-group.date-group input[type="date"],
+.control-group.date-group input[type="text"] {
+    flex-grow: 1;
+    padding: 8px 10px; 
+    border: none;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    background-color: white; 
+    border-radius: 0; 
+    height: 100%; 
+}
+
+/* Calendar Icon Button Styling */
+.calendar-icon {
+    /* Repositioning and styling to look like a button */
+    position: absolute;
+    right: 0; 
+    top: 0;
+    transform: none; 
+    
+    background-color: #f7f7f7; /* Light gray button background */
+    color: #555; /* Darker icon color */
+    width: 35px; /* Width of the button area */
+    height: 100%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    pointer-events: none; /* Crucial: ensures clicks pass through to the input */
+    border-left: 1px solid #ccc; 
+    
+    /* Z-index below the input's picker indicator area */
+    z-index: 2; 
+}
+
+/* Crucial: Position the native date picker indicator over the custom icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute; 
+    width: 35px; /* Only cover the icon area */
+    height: 100%;
+    cursor: pointer;
+    right: 0;
+    top: 0;
+    z-index: 5; /* Z-index above the icon for clicking */
+}
+
+
+.country-select-container {
+    position: relative;
+    margin-bottom: 10px; 
+}
+
+/* Style the select to look like the image */
+.custom-dropdown-mimic select {
+    width: 100%;
+    padding: 8px 30px 8px 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    
+    /* Hide the default OS dropdown arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--page-bg);
+}
+
+/* Custom arrow using Font Awesome */
+.country-select-container::after {
+    content: "\f0d7"; /* Font Awesome down arrow */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    right: 15px; 
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dark);
+    pointer-events: none;
+    font-size: 1rem;
+    z-index: 10;
+}
+
+/* Ensure release type checkboxes are correctly styled */
+#release-type-filters.checkbox-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+
+/* --- Other General Styles (Unchanged) --- */
+.genre-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 5px;
+}
+
+.genre-list label {
+    background-color: #f5f5f5;
+    color: var(--text-dark);
+    border: 1px solid #e3e3e3;
+    border-radius: 14px; 
+    padding: 5px 12px;
+    font-size: 0.85rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    user-select: none;
+    display: flex;
+    align-items: center; 
+    margin: 0; 
+    position: relative;
+}
+
+.genre-list input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.genre-list label:hover {
+    background-color: var(--accent-blue);
+    color: var(--text-light);
+}
+
+.genre-list label:has(input[type="checkbox"]:checked) {
+    background-color: var(--primary-dark); 
+    border-color: var(--primary-dark);
+    color: var(--text-light);
+}
+.loading-genres {
+    color: var(--text-gray);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+
+/* --- Range Slider Styles (Removed inline styles for display) --- */
+.k-slider {
+    position: relative;
+    padding: 20px 0 10px 0; 
+    width: 100%;
+    user-select: none;
+}
+
+.k-slider-track-wrap {
+    position: relative;
+    padding: 0 5px; 
+}
+
+.k-slider-track {
+    background-color: #e6e6e6;
+    height: 6px;
+    border-radius: 3px;
+    position: relative;
+    margin: 5px 0;
+}
+
+.k-slider-selection {
+    background-color: var(--accent-blue);
+    height: 100%;
+    position: absolute;
+    top: 0;
+    border-radius: 3px;
+    /* Inline styles moved to JS for dynamic positioning/width */
+}
+
+.k-slider-items {
+    list-style: none;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    line-height: 0;
+    transform: translateY(-5px); 
+}
+
+.k-tick {
+    position: absolute;
+    width: 1px;
+    height: 5px;
+    background: #ccc;
+}
+
+.k-tick-large {
+    height: 8px;
+    background: #ccc;
+}
+/* Removed inline style "style="line-height: 1px"" from tick-large which is not standard and not needed with line-height:0 on .k-slider-items */
+
+.k-tick-large .k-label {
+    position: absolute;
+    top: 30px; 
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    white-space: nowrap;
+    text-align: center;
+}
+
+.k-first { left: 0%; }
+.k-last { left: 100%; }
+.k-first .k-label { transform: translateX(0); }
+.k-last .k-label { transform: translateX(-100%); }
+
+#user-score-slider-container .k-tick { width: 1px; } 
+#user-score-slider-container .k-tick[title="1"] { left: 10%; }
+#user-score-slider-container .k-tick[title="2"] { left: 20%; }
+#user-score-slider-container .k-tick[title="3"] { left: 30%; }
+#user-score-slider-container .k-tick[title="4"] { left: 40%; }
+#user-score-slider-container .k-tick[title="5"] { left: 50%; } 
+#user-score-slider-container .k-tick[title="6"] { left: 60%; }
+#user-score-slider-container .k-tick[title="7"] { left: 70%; }
+#user-score-slider-container .k-tick[title="8"] { left: 80%; }
+#user-score-slider-container .k-tick[title="9"] { left: 90%; }
+
+#min-votes-slider-container .k-tick-large { width: 1px; }
+#min-votes-slider-container .k-tick[title="100"] { left: 20%; }
+#min-votes-slider-container .k-tick[title="200"] { left: 40%; }
+#min-votes-slider-container .k-tick[title="300"] { left: 60%; }
+#min-votes-slider-container .k-tick[title="400"] { left: 80%; }
+
+#runtime-slider-container .k-tick-large { width: 1px; }
+#runtime-slider-container .k-tick[title="120"] { left: 33.333%; }
+#runtime-slider-container .k-tick[title="240"] { left: 66.666%; }
+
+
+.k-draghandle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    border: 3px solid #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    cursor: grab;
+    z-index: 2; 
+    margin-left: -8px; 
+    outline: none;
+    transition: box-shadow 0.2s;
+    /* Inline styles for position/display removed to JS */
+}
+
+.k-draghandle:hover {
+    box-shadow: 0 0 0 5px rgba(1, 180, 228, 0.3); 
+}
+
+/* Moved display: none logic from inline style to CSS for full_width range inputs and handled in JS for removal on load */
+#user_score_range_inputs,
+#min_votes_range_inputs,
+#runtime_range_inputs {
+    display: none;
+}
+
+
+/* --- Button Styles (Removed disabled style from button in HTML) --- */
+.apply-filter-btn {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: var(--accent-blue);
+    color: var(--text-light);
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s, background-color 0.2s;
+    text-transform: capitalize;
+    margin-top: 20px;
+    height: 44px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.apply-filter-btn:hover:not(:disabled) {
+    background: var(--primary-dark);
+}
+.apply-filter-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+    background: #ccc;
+    color: #888;
+}
+
+/* Sticky Search Button for Mobile/Tablet */
+.sticky-search-btn {
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    z-index: 99; 
+    width: 100dvw;
+    background-color: var(--accent-blue);
+    color: var(--text-light);
+    font-weight: 700;
+    padding: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    /* Inline styles removed */
+}
+
+.sticky-search-btn.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --- Movie Grid and Rating Circle (Crucial Changes Here) --- */
+.movie-list-area {
+    padding-top: 0;
+}
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px 20px;
+    margin-top: 0;
+}
+.movie-card {
+    position: relative;
+    background-color: var(--page-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+    color: var(--text-light);
+    height: 363px; /* Default card height for desktop */
+}
+.movie-card:hover {
+    transform: translateY(-5px);
+}
+.poster {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 2/3; 
+}
+
+.movie-card a {
+    position: relative;
+}
+
+.movie-info {
+    padding: 20px 10px 10px 10px;
+}
+.movie-info h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    line-height: 1.2;
+    color: var(--text-dark); 
+}
+
+.movie-info h3 a {
+    color: var(--text-dark); 
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.movie-info h3 a:hover {
+    color: var(--accent-blue); 
+}
+
+/* NEW: Description is hidden by default, shown on mobile */
+.description {
+    display: none; /* Hidden by default on desktop/tablet grid view */
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    margin-top: 8px;
+    line-height: 1.4;
+    overflow: hidden;
+    /* Limit to max 3 lines */
+    /* display: -webkit-box; */
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+}
+
+
+.release-date {
+    color: #999;
+    font-size: 0.8rem;
+}
+
+.message-status {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2rem;
+    color: var(--text-gray);
+    width: 100%;
+    /* Inline styles removed */
+}
+.message-status.error {
+    color: #db2360;
+    font-weight: 600;
+    /* Inline styles removed */
+}
+
+.consensus {
+    position: absolute; 
+    bottom: -20px;
+    left: 10px;
+    width: 38px; 
+    height: 38px;
+    background-color: transparent;
+}
+
+.outer_ring {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid var(--primary-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-dark); 
+    box-sizing: border-box;
+    overflow: hidden; 
+}
+
+.user_score_chart {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user_score_chart canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.user_score_chart .percent {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-light);
+    z-index: 2; 
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+}
+
+.user_score_chart .percent span {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.user_score_chart .percent small {
+    font-size: 0.5em;
+    font-weight: 700;
+    vertical-align: top;
+    line-height: 1;
+}
+
+.load-more-btn {
+    display: block;
+    width: 100%;
+    background-color: var(--accent-blue);
+    color: var(--text-light);
+    font-weight: 700;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 30px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.2s;
+    /* Inline styles removed */
+}
+.load-more-btn:hover {
+    background-color: #008eb7;
+}
+
+/* --- FOOTER STYLES (Unchanged) --- */
+
+.tmdb-footer {
+    background-color: var(--footer-bg);
+    color: var(--footer-text-color);
+    padding: 30px 20px 10px 20px;
+    margin-top: 30px;
+    font-size: 1rem;
+}
+
+.footer-content-wrapper {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    padding-bottom: 30px;
+}
+
+.footer-col {
+    padding-right: 20px;
+}
+
+.footer-col:first-child {
+    flex-shrink: 0; 
+    padding-top: 20px;
+}
+
+.footer-title {
+    font-size: 1.1em;
+    font-weight: 700;
+    margin-bottom: 10px;
+    white-space: nowrap;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    line-height: 1.8;
+    color: var(--footer-text-color);
+}
+
+.footer-col a {
+    color: var(--footer-text-color); 
+    text-decoration: none;
+    font-weight: 500; 
+    font-size: 0.95em;
+    transition: color 0.2s;
+}
+
+.footer-col a:hover {
+    color: var(--accent-blue);
+}
+
+
+/* Logo and Greeting styles */
+.tmdb-logo-placeholder {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--text-light);
+    margin-bottom: 30px;
+    line-height: 1;
+    display: inline-block;
+    padding-bottom: 10px;
+    margin-left: -5px; 
+    padding-left: 5px;
+}
+.footer-logo {
+    width: 130px;
+}
+
+.btn-greeting {
+    display: block;
+    background-color: var(--accent-blue);
+    color: var(--primary-dark);
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, color 0.2s;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-greeting:hover {
+    background-color: var(--footer-greeting-btn);
+    color: var(--accent-blue);
+
+}
+
+.footer-build-info {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #444; 
+    padding-top: 10px;
+    border-top: 1px solid #06406d; 
+}
+
+
+/* --- Responsive Design --- */
+
+@media (min-width: 1200px) {
+    .movies-grid {
+        grid-template-columns: repeat(5, 1fr); 
+    }
+}
+
+@media (max-width: 1199px) {
+    .movies-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 577px) and (max-width: 991px) {
+    .container {
+        grid-template-columns: 200px 1fr;
+    }
+    .movies-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .sticky-search-btn {
+        left: 0;
+        width: 100%;
+        box-sizing: border-box; 
+        bottom: 0;
+    }
+    
+    .footer-content-wrapper {
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 30px 40px;
+    }
+    .footer-col:first-child {
+        width: 100%;
+        text-align: center;
+        padding-top: 0;
+    }
+    .footer-col {
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    
+    /* Make the mobile sidebar visible for operation */
+    .mobile-sidebar {
+        display: block; 
+    }
+    
+    /* 1. Mobile Header Layout: Left Toggle | Center Logo | Right Icons */
+    .header-content {
+        padding: 0 10px;
+        justify-content: space-between; 
+        position: relative; 
+    }
+    
+    /* Show the hamburger menu icon on the far left */
+    .menu-toggle {
+        display: flex;
+        padding-right: 0; 
+        order: -1;
+    }
+    
+    /* Center the Logo Link (the .left-side container) */
+    .left-side {
+        position: absolute; 
+        left: 50%;
+        transform: translateX(-50%);
+        padding-right: 0; 
+    }
+
+    /* Hide the full navigation links */
+    .main-nav {
+        display: none; 
+    }
+    
+    /* Set the logo to a suitable mobile size */
+    .logo {
+        width: 100px;
+        height: 15px;
+    }
+
+    /* 4. Configure the Right-side Action Icons */
+    .action-nav {
+        gap: 10px; 
+        justify-content: flex-end;
+    }
+    
+    /* Hide the plus icon, as per the image */
+    .plus-icon { 
+        display: none;
+    }
+    
+    /* Adjust avatar size for mobile */
+    .user-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 0.8rem;
+    }
+    
+    .nav-icon {
+        font-size: 1.1rem;
+    }
+
+    .lang-selector {
+        font-size: 0.8rem;
+    }
+    
+    
+    /* 2. Main Content and Sidebar Adjustments */
+    .container {
+        grid-template-columns: 1fr; 
+        padding: 0 10px;
+    }
+    .sidebar {
+        padding: 0;
+    }
+    .sidebar h2 {
+        display: none; 
+    }
+    /* Move Search button to the top of the filter panel stack */
+    #search-button {
+        order: -1; 
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+    .panel {
+        margin-bottom: 10px;
+    }
+    
+    /* --- CRUCIAL MOBILE MOVIE CARD LIST VIEW --- */
+    .movies-grid {
+        grid-template-columns: 1fr; /* Force single column for the cards themselves */
+        gap: 20px 0; /* Vertical gap between cards */
+    }
+    .movie-card {
+        height: auto;
+        /* Use flexbox to put poster (left) and info (right) side by side */
+        display: flex; 
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow for list view */
+        /* Ensure the card content is aligned to the top */
+        align-items: flex-start;
+        border: 1px solid #e3e3e3;
+    }
+    .movie-card:hover {
+        transform: none; /* Disable hover movement in list view */
+    }
+    
+    .movie-card .poster {
+        width: 100px; /* Fixed poster width */
+        min-width: 100px; /* Ensure poster doesn't shrink */
+        height: 150px; /* Fixed poster height (closer to 2:3 aspect for this size) */
+        border-radius: 8px 0 0 8px; /* Apply border radius only to the left side */
+    }
+    
+    .movie-info {
+        padding: 10px 10px 10px 15px; /* Adjust padding for list format */
+        flex-grow: 1;
+        /* Make space for the description */
+        min-height: 150px; 
+    }
+
+    /* Show the description */
+    .description {
+        display: -webkit-box; /* Re-enable for truncation */
+    }
+    
+    /* Hide the rating circle in the list view */
+    .consensus {
+        display: none; 
+    }
+    
+    /* 3. Footer */
+    .sticky-search-btn {
+        width: 100%;
+        left: 0;
+        right: 0;
+        display: block; 
+    }
+    
+    .tmdb-footer {
+        padding: 30px 10px 10px 10px;
+    }
+    .footer-content-wrapper {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+    }
+    .footer-col:first-child {
+        padding-top: 0;
+        text-align: center;
+    }
+    .btn-greeting {
+        width: 100%;
+        max-width: 250px;
+        margin: 0 auto 20px auto;
+    }
+}
+
+@media (max-width: 470px){
+    /* No major structural changes here, the 576px query handles the list view */
+}
+
+/* --- NEW TOOLTIP STYLES (Unchanged) --- */
+
+.tooltip-box {
+    display: none; 
+    
+    /* Positioning */
+    position: absolute;
+    top: -45px; 
+    left: 10px; 
+    
+    /* Sizing and Styling */
+    background-color: var(--primary-dark); 
+    color: var(--text-light); 
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.4;
+    white-space: nowrap; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 20; 
+    
+    /* Adjust alignment to start near the icon */
+    transform: translateX(calc(-100% + 40px));
+}
+
+/* Tooltip Arrow/Triangle */
+.tooltip-box::after {
+    content: "";
+    position: absolute;
+    top: 100%; 
+    left: calc(100% - 15px); 
+    margin-left: -5px; 
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--primary-dark) transparent transparent transparent; 
+}
+
+/* Hover effect: Display the tooltip when hovering over the help icon */
+#language-help-icon:hover + .tooltip-box,
+#language-help-icon:hover ~ .tooltip-box { 
+    display: block;
+}
+
+/* --- NEW Keyword Input & Tag Styles --- */
+.keywords-control-group {
+    position: relative;
+}
+
+.keyword-tags-input {
+    /* Mimics a multi-select input field */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: var(--page-bg);
+}
+
+.keyword-tags-input input[type="text"] {
+    /* Style the actual text input inside the tag container */
+    flex-grow: 1;
+    min-width: 100px;
+    padding: 3px 0; /* Adjust padding since container has padding */
+    border: none;
+    box-shadow: none;
+    font-size: 0.9rem;
+    height: auto;
+}
+.keyword-tags-input input[type="text"]:focus {
+    outline: none;
+}
+
+/* Style for individual selected keyword tags */
+.keyword-tag {
+    display: flex;
+    align-items: center;
+    background-color: var(--panel-border);
+    /* border: 2px solid gray; */
+    color: var(--text-dark);
+    border-radius: 4px;
+    padding: 3px 5px 3px 10px;
+    font-size: 0.85rem;
+    /* font-weight: 600; */
+    white-space: nowrap;
+    user-select: none;
+}
+
+.keyword-tag .remove-tag {
+    background: none;
+    color: var(--footer-greeting-btn);
+    border: none;
+    /* color: var(--text-light); */
+    border-radius: 50%;
+    background-color: var(--text-dark);
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 0 3px;
+    transition: color 0.2s;
+}
+
+
+
+/* --- Autocomplete Dropdown Styles --- */
+.autocomplete-dropdown {
+    /* position: absolute; */
+    top: 100%; /* Position below the main input container */
+    left: 0;
+    right: 0;
+    z-index: 100;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    background-color: var(--page-bg);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
+}
+
+.autocomplete-dropdown.show {
+    display: block;
+}
+
+.autocomplete-dropdown li {
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    color: var(--text-dark);
+}
+
+.autocomplete-dropdown li:hover {
+    background-color: #f0f0f0;
+}
+.autocomplete-dropdown li.selected-keyword {
+    background-color: #e0e0e0;
+    color: var(--text-gray);
+    cursor: default;
+}
