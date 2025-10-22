@@ -19,28 +19,27 @@
     />
   </head>
   <body>
-    
     <div id="mobile-sidebar-menu" class="mobile-sidebar">
-        <nav class="mobile-nav">
-            <ul>
-                <li class="section-title"><a href="#">Movies</a></li>
-                <li class="section-title"><a href="#">TV Shows</a></li>
-                <li class="section-title"><a href="#">People</a></li>
-                
-                <li class="separator"></li>
-                
-                <li><a href="#">Contribution Bible</a></li>
-                <li><a href="#">Discussions</a></li>
-                <li><a href="#">Leaderboard</a></li>
-                <li><a href="#">API</a></li>
-                <li><a href="#">Support</a></li>
-                <li><a href="#">About</a></li>
-                
-                <li class="separator"></li>
-                
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </nav>
+      <nav class="mobile-nav">
+        <ul>
+          <li class="section-title"><a href="#">Movies</a></li>
+          <li class="section-title"><a href="#">TV Shows</a></li>
+          <li class="section-title"><a href="#">People</a></li>
+
+          <li class="separator"></li>
+
+          <li><a href="#">Contribution Bible</a></li>
+          <li><a href="#">Discussions</a></li>
+          <li><a href="#">Leaderboard</a></li>
+          <li><a href="#">API</a></li>
+          <li><a href="#">Support</a></li>
+          <li><a href="#">About</a></li>
+
+          <li class="separator"></li>
+
+          <li><a href="#">Logout</a></li>
+        </ul>
+      </nav>
     </div>
     <header>
       <div class="header-content">
@@ -139,53 +138,100 @@
                 <h4>Release Dates</h4>
                 <div class="control-group checkbox-group">
                   <label>
-                    <input type="checkbox" id="search-all-releases" /> Search all releases?
+                    <input type="checkbox" id="search-all-releases" /> Search
+                    all releases?
                   </label>
                 </div>
 
-                <div class="control-group checkbox-group countries-toggle" id="countries-toggle-container">
-                    <label>
-                        <input type="checkbox" id="search-all-countries" /> Search all countries?
-                    </label>
+                <div
+                  class="control-group checkbox-group countries-toggle"
+                  id="countries-toggle-container"
+                >
+                  <label>
+                    <input type="checkbox" id="search-all-countries" /> Search
+                    all countries?
+                  </label>
                 </div>
 
-                <div class="control-group country-select-container" id="country-select-container">
-                    <div class="custom-dropdown-mimic">
-                        <select id="country-select">
-                            <option value="">Loading countries...</option>
-                        </select>
-                    </div>
+                <div
+                  class="control-group country-select-container"
+                  id="country-select-container"
+                >
+                  <div class="custom-dropdown-mimic">
+                    <select id="country-select">
+                      <option value="">Loading countries...</option>
+                    </select>
+                  </div>
                 </div>
-                
-                <div class="control-group checkbox-group release-type-filters" id="release-type-filters">
+
+                <div
+                  class="control-group checkbox-group release-type-filters"
+                  id="release-type-filters"
+                >
                   <label>
-                    <input type="checkbox" name="release-type" value="1" checked /> Theatrical (limited)
+                    <input
+                      type="checkbox"
+                      name="release-type"
+                      value="1"
+                      checked
+                    />
+                    Theatrical (limited)
                   </label>
                   <label>
-                    <input type="checkbox" name="release-type" value="2" checked /> Theatrical
+                    <input
+                      type="checkbox"
+                      name="release-type"
+                      value="2"
+                      checked
+                    />
+                    Theatrical
                   </label>
                   <label>
-                    <input type="checkbox" name="release-type" value="3" checked /> Premiere
+                    <input
+                      type="checkbox"
+                      name="release-type"
+                      value="3"
+                      checked
+                    />
+                    Premiere
                   </label>
                   <label>
-                    <input type="checkbox" name="release-type" value="4" checked /> Digital
+                    <input
+                      type="checkbox"
+                      name="release-type"
+                      value="4"
+                      checked
+                    />
+                    Digital
                   </label>
                   <label>
-                    <input type="checkbox" name="release-type" value="5" checked /> Physical
+                    <input
+                      type="checkbox"
+                      name="release-type"
+                      value="5"
+                      checked
+                    />
+                    Physical
                   </label>
                   <label>
-                    <input type="checkbox" name="release-type" value="6" checked /> TV
+                    <input
+                      type="checkbox"
+                      name="release-type"
+                      value="6"
+                      checked
+                    />
+                    TV
                   </label>
                 </div>
 
                 <div class="control-group date-group" id="from-date-group">
                   <label for="release-from">from</label>
-                  <input type="date" id="release-from" /> 
+                  <input type="date" id="release-from" />
                   <i class="fas fa-calendar-alt calendar-icon"></i>
                 </div>
                 <div class="control-group date-group" id="to-date-group">
                   <label for="release-to">to</label>
-                  <input type="date" id="release-to" value="2026-04-20" /> 
+                  <input type="date" id="release-to" value="2026-04-20" />
                   <i class="fas fa-calendar-alt calendar-icon"></i>
                 </div>
               </div>
@@ -202,7 +248,11 @@
 
               <div class="filter-group">
                 <h4>
-                  Language <i class="fas fa-question-circle help-icon" id="language-help-icon"></i>
+                  Language
+                  <i
+                    class="fas fa-question-circle help-icon"
+                    id="language-help-icon"
+                  ></i>
                   <div class="tooltip-box" id="language-tooltip">
                     Filter items based on their original language.
                   </div>
@@ -229,10 +279,7 @@
                         <li class="k-tick" title="2"></li>
                         <li class="k-tick" title="3"></li>
                         <li class="k-tick" title="4"></li>
-                        <li
-                          class="k-tick k-tick-large"
-                          title="5"
-                        >
+                        <li class="k-tick k-tick-large" title="5">
                           <span class="k-label">5</span>
                         </li>
                         <li class="k-tick" title="6"></li>
@@ -301,28 +348,16 @@
                         <li class="k-tick k-tick-large k-first" title="0">
                           <span class="k-label">0</span>
                         </li>
-                        <li
-                          class="k-tick k-tick-large"
-                          title="100"
-                        >
+                        <li class="k-tick k-tick-large" title="100">
                           <span class="k-label">100</span>
                         </li>
-                        <li
-                          class="k-tick k-tick-large"
-                          title="200"
-                        >
+                        <li class="k-tick k-tick-large" title="200">
                           <span class="k-label">200</span>
                         </li>
-                        <li
-                          class="k-tick k-tick-large"
-                          title="300"
-                        >
+                        <li class="k-tick k-tick-large" title="300">
                           <span class="k-label">300</span>
                         </li>
-                        <li
-                          class="k-tick k-tick-large"
-                          title="400"
-                        >
+                        <li class="k-tick k-tick-large" title="400">
                           <span class="k-label">400</span>
                         </li>
                         <li class="k-tick k-tick-large k-last" title="500">
@@ -353,10 +388,7 @@
                           aria-valuenow="500"
                         ></span>
                       </div>
-                      <div
-                        id="min_votes_range_inputs"
-                        class="full_width range"
-                      >
+                      <div id="min_votes_range_inputs" class="full_width range">
                         <input
                           id="vote_count_gte"
                           name="vote_count.gte"
@@ -381,16 +413,10 @@
                         <li class="k-tick k-tick-large k-first" title="0">
                           <span class="k-label">0</span>
                         </li>
-                        <li
-                          class="k-tick k-tick-large"
-                          title="120"
-                        >
+                        <li class="k-tick k-tick-large" title="120">
                           <span class="k-label">120</span>
                         </li>
-                        <li
-                          class="k-tick k-tick-large"
-                          title="240"
-                        >
+                        <li class="k-tick k-tick-large" title="240">
                           <span class="k-label">240</span>
                         </li>
                         <li class="k-tick k-tick-large k-last" title="360">
@@ -421,10 +447,7 @@
                           aria-valuenow="360"
                         ></span>
                       </div>
-                      <div
-                        id="runtime_range_inputs"
-                        class="full_width range"
-                      >
+                      <div id="runtime_range_inputs" class="full_width range">
                         <input
                           id="with_runtime_lte"
                           name="with_runtime.lte"
@@ -447,8 +470,10 @@
                       placeholder="Filter by keywords..."
                       autocomplete="off"
                     />
-                    <ul id="keywords-autocomplete-list" class="autocomplete-dropdown">
-                      </ul>
+                    <ul
+                      id="keywords-autocomplete-list"
+                      class="autocomplete-dropdown"
+                    ></ul>
                   </div>
                 </div>
               </div>
@@ -463,51 +488,40 @@
         <section class="movie-list-area">
           <div id="movies-grid" class="movies-grid"></div>
 
-          <p
-            id="loading-indicator"
-            class="message-status"
-          >
+          <p id="loading-indicator" class="message-status">
             Loading more movies...
           </p>
-          <p
-            id="error-message"
-            class="message-status error"
-          >
+          <p id="error-message" class="message-status error">
             Failed to load movies. Please try again.
           </p>
 
-          <button
-            id="load-more-btn"
-            class="load-more-btn"
-          >
-            Load More
-          </button>
+          <button id="load-more-btn" class="load-more-btn">Load More</button>
         </section>
       </div>
     </main>
 
     <template id="movie-card-template">
-        <div class="movie-card">
-            <a href="#">
-                <img src="" alt="Movie Poster" class="poster" data-poster>
-                
-                <div class="consensus tight">
-                    <div class="outer_ring">
-                        <div class="user_score_chart" data-score-chart>
-                            <div class="percent">
-                                <span data-score-value></span> 
-                            </div>
-                            <canvas height="34" width="34"></canvas>
-                        </div>
-                    </div>
+      <div class="movie-card">
+        <a href="#">
+          <img src="" alt="Movie Poster" class="poster" data-poster />
+
+          <div class="consensus tight">
+            <div class="outer_ring">
+              <div class="user_score_chart" data-score-chart>
+                <div class="percent">
+                  <span data-score-value></span>
                 </div>
-            </a>
-            <div class="movie-info">
-                <h3><a href="#" data-title></a></h3>
-                <p class="release-date" data-release-date></p>
-                <p class="description" data-overview></p>
+                <canvas height="34" width="34"></canvas>
+              </div>
             </div>
+          </div>
+        </a>
+        <div class="movie-info">
+          <h3><a href="#" data-title></a></h3>
+          <p class="release-date" data-release-date></p>
+          <p class="description" data-overview></p>
         </div>
+      </div>
     </template>
     <footer class="tmdb-footer">
       <div class="footer-content-wrapper">
@@ -518,7 +532,7 @@
                 src="media/moviedb.svg"
                 alt="TMDB Logo"
                 class="footer-logo"
-                />
+              />
             </div>
           </a>
           <a href="#" class="btn-greeting">Hi annaadonts!</a>
