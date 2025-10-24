@@ -92,8 +92,6 @@ const mobileSidebar = document.getElementById("mobile-sidebar-menu");
 
 /**
  * Converts a 2-letter ISO 3166-1 alpha-2 country code to a Unicode flag emoji.
- * @param {string} code
- * @returns {string} The flag emoji string.
  */
 function countryCodeToEmoji(code) {
   if (!code) return "";
@@ -108,8 +106,7 @@ function countryCodeToEmoji(code) {
 
 /**
  * Converts a YYYY-MM-DD string to M/D/YYYY display format.
- * @param {string} dateString - Date in 'YYYY-MM-DD' format.
- * @returns {string} Date in 'M/D/YYYY' format.
+
  */
 function formatDisplayDate(dateString) {
   if (!dateString || !dateString.includes("-")) return dateString;
@@ -229,7 +226,6 @@ function toggleMobileMenu() {
 
 /**
  * Handles the logic for custom date input formatting and picker functionality.
- * @param {HTMLInputElement} inputElement
  */
 function setupCustomDateInput(inputElement) {
   // 1. Set initial value to display format
@@ -289,7 +285,6 @@ async function fetchCountriesAndRenderSelect() {
 /**
  * Renders country options to the country select dropdown.
  * Uses document.createElement and appendChild to avoid innerHTML.
- * @param {Array<Object>} countries
  */
 function renderCountryFilters(countries) {
   // Clear the existing options without using innerHTML
@@ -352,7 +347,6 @@ async function fetchLanguages() {
 /**
  * Renders language options to the language select dropdown.
  * Uses document.createElement and appendChild to avoid innerHTML.
- * @param {Array<Object>} languages
  */
 function renderLanguageFilters(languages) {
   // Clear the existing options without using innerHTML
@@ -462,7 +456,6 @@ async function fetchMovies(isNewQuery) {
 
 /**
  * Renders genre filters using document.createElement and appendChild.
- * @param {Array<Object>} genres
  */
 function renderGenreFilters(genres) {
   // Clear the existing content without using innerHTML
@@ -495,10 +488,7 @@ function renderGenreFilters(genres) {
 
 /**
  * Draws the progress circle for the user score on a canvas.
- * @param {HTMLCanvasElement} canvas
- * @param {number} percent
- * @param {string} trackColor
- * @param {string} barColor
+
  */
 function drawScoreCircle(canvas, percent, trackColor, barColor) {
   const ctx = canvas.getContext("2d");
@@ -533,8 +523,7 @@ function drawScoreCircle(canvas, percent, trackColor, barColor) {
 
 /**
  * Renders movie cards using the <template> element.
- * @param {Array<Object>} movies
- * @param {boolean} clearGrid
+
  */
 function renderMovies(movies, clearGrid) {
   if (clearGrid) {
@@ -559,7 +548,7 @@ function renderMovies(movies, clearGrid) {
 
     const posterPath = movie.poster_path
       ? `${IMAGE_BASE_URL}${movie.poster_path}`
-      : "media/placeholder.png";
+      : "media/no-poster.png";
     const userRating = (movie.vote_average * 10).toFixed(0);
 
     let barColor = "#d2d531";
@@ -673,7 +662,6 @@ function debounceKeywordsSearch() {
 
 /**
  * Fetches keyword suggestions from TMDB API.
- * @param {string} query
  */
 async function fetchKeywords(query) {
   if (query.length < 2) {
@@ -697,8 +685,7 @@ async function fetchKeywords(query) {
 
 /**
  * Renders the keyword suggestions in the autocomplete dropdown.
- * @param {Array<Object>} keywords
- * @param {string} currentQuery
+
  */
 function renderKeywordAutocomplete(keywords, currentQuery) {
   // Clear the existing content
@@ -731,7 +718,6 @@ function renderKeywordAutocomplete(keywords, currentQuery) {
 
 /**
  * Handles the click event on an autocomplete item to select a keyword.
- * @param {Event} event
  */
 function handleKeywordSelect(event) {
   const listItem = event.target.closest("li");
@@ -788,7 +774,6 @@ function renderSelectedKeywords() {
 
 /**
  * Removes a keyword from the selected list and re-renders the tags.
- * @param {number} id - The ID of the keyword to remove.
  */
 function handleKeywordRemove(id) {
   selectedKeywords = selectedKeywords.filter((keyword) => keyword.id !== id);
