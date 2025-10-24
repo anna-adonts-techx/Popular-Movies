@@ -283,14 +283,14 @@ header.header-hidden {
 }
 
 .panel h3:hover {
-  background-color: #ededed;
+  background-color: var(--footer-greeting-btn);
 }
 
 /* Collapse/Expand Icon Styling */
 .panel h3 i {
   transition: transform 0.3s ease;
   font-size: 0.9rem;
-  color: #999;
+  color: var(--text-gray);
 }
 
 .panel.open h3 i {
@@ -337,7 +337,7 @@ header.header-hidden {
 .help-icon {
   font-size: 0.8rem;
   margin-left: 5px;
-  color: #999;
+  color: var(--text-gray);
 }
 
 .control-group {
@@ -405,7 +405,7 @@ header.header-hidden {
   border: none;
   font-size: 0.9rem;
   color: var(--text-dark);
-  background-color: white;
+  background-color: var(--page-bg);
   border-radius: 0;
   height: 100%;
 }
@@ -418,8 +418,8 @@ header.header-hidden {
   top: 0;
   transform: none;
 
-  background-color: #f7f7f7; /* Light gray button background */
-  color: #555; /* Darker icon color */
+  background-color: var(--footer-text-color); /* Light gray button background */
+  color: var(--text-gray); /* Darker icon color */
   width: 35px; /* Width of the button area */
   height: 100%;
 
@@ -430,7 +430,6 @@ header.header-hidden {
   pointer-events: none; /* Crucial: ensures clicks pass through to the input */
   border-left: 1px solid #ccc;
 
-  z-index: 2;
 }
 
 /* Crucial: Position the native date picker indicator over the custom icon */
@@ -498,7 +497,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .genre-list label {
-  background-color: #f5f5f5;
+  background-color: var(--sidebar-bg);
   color: var(--text-dark);
   border: 1px solid #e3e3e3;
   border-radius: 14px;
@@ -550,7 +549,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .k-slider-track {
-  background-color: #e6e6e6;
+  background-color: var(--panel-border);
   height: 6px;
   border-radius: 3px;
   position: relative;
@@ -719,8 +718,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0.6;
   cursor: not-allowed;
   box-shadow: none;
-  background: #ccc;
-  color: #888;
+  background: var(--footer-link-hover);
+  color: var(--text-gray);
 }
 
 /* Sticky Search Button for Mobile/Tablet */
@@ -747,6 +746,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .sticky-search-btn.is-visible {
   opacity: 1;
   visibility: visible;
+}
+
+.sticky-search-btn:hover {
+  background-color: var(--primary-dark);
 }
 
 /* --- Movie Grid and Rating Circle (Crucial Changes Here) --- */
@@ -819,7 +822,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .release-date {
-  color: #999;
+  color: var(--text-gray);
   font-size: 0.8rem;
 }
 
@@ -881,7 +884,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-light);
-  z-index: 2;
   border-radius: 50%;
   width: 100%;
   height: 100%;
@@ -915,7 +917,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   /* Inline styles removed */
 }
 .load-more-btn:hover {
-  background-color: #008eb7;
+  background-: #008eb7;
 }
 
 /* --- FOOTER STYLES (Unchanged) --- */
@@ -1013,7 +1015,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .footer-build-info {
   text-align: center;
   font-size: 0.75rem;
-  color: #444;
+  color: var(--text-gray);
   padding-top: 10px;
   border-top: 1px solid #06406d;
 }
@@ -1354,10 +1356,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .autocomplete-dropdown li:hover {
-  background-color: #f0f0f0;
+  background-color: var(--footer-greeting-btn);
 }
 .autocomplete-dropdown li.selected-keyword {
-  background-color: #e0e0e0;
+  background-color: var(--footer-greeting-btn);
   color: var(--text-gray);
   cursor: default;
 }
